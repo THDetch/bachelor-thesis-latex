@@ -1,0 +1,71 @@
+\documentclass[a4paper]{scrbook}
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{relsize}
+\usepackage{hyperref}
+\usepackage{libertine}
+\usepackage{ifthen}
+% \usepackage{fancyhdr}
+% \KOMAoptions{open=any}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Replace these values
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\thesistitleDE}{Erzeugung optischer Fernerkundungsdaten (Sentinel-2) auf Basis von Radar-Fernerkundungsdaten (Sentinel-1) mittels generativer KI}
+\newcommand{\thesistitleEN}{Generation of optical remote sensing data (Sentinel-2) based on radar remote sensing data (Sentinel-1) using generative AI}
+
+\newcommand{\student}{Ahmed Attia}
+\newcommand{\matrnr}{00815907}
+\newcommand{\stammnr}{} % Unset this variable if you only have a (single) matriculation number
+% \newcommand{\stammnr}{234567} % Unset this variable if you only have a (single) matriculation number
+\newcommand{\submissiondate}{XX.\ Monat 20XX}
+\newcommand{\supervisor}{Dr. Peter Hofmann}
+\newcommand{\secsupervisor}{} % Unset this variable if no second supervisor is required
+% \newcommand{\secsupervisor}{Prof.~Dr.~Zweitprüfer} % Unset this variable if no second supervisor is required
+\newcommand{\faculty}{Angewandte Informatik}
+
+% Select your course of studies here
+\newcommand{\studies}{Bachelor Künstliche Intelligenz}
+\newcommand{\degree}{Bachelor of Science (B.Sc.)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\renewcommand*{\UrlFont}{\ttfamily\smaller\relax}
+
+\begin{document}
+\pagestyle{headings}
+\pagenumbering{roman}
+
+
+\input{title}
+\input{declaration}
+
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+
+\tableofcontents
+\cleardoublepage
+
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+
+\input{chapters/introduction.tex}
+\input{chapters/background.tex}
+\input{chapters/related-work.tex}
+\input{chapters/methodology.tex}
+\input{chapters/experiments.tex}
+\input{chapters/discussion.tex}
+\input{chapters/conclusion.tex}
+
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\nocite{*}
+\end{document}
