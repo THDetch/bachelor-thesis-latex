@@ -16,3 +16,19 @@ SiMaVP   & \textbf{31.41} & \textbf{139.95} & \textbf{43.75} & \textbf{0.9797} \
 \end{tabular}
 \end{table}
 
+\begin{table}[]
+    \centering
+    \caption{Data cropped to 64x64, only channel 0 is used}
+    \label{tab:experiment_results}
+    \begin{tabular}{lcccc}
+    \hline
+    \textbf{Model} & \textbf{MAE} $\downarrow$ & \textbf{RMSE} $\downarrow$ & \textbf{PSNR (dB)} $\uparrow$ & \textbf{SSIM} $\uparrow$ \\
+    \hline
+    pix2pix  & 70.48 & 300.88 & 37.10 & 0.9490 \\
+    SwinUnet & x & x & x & x \\
+    UMamba   & 33.60 & 149.58 & 42.96 & 0.9749 \\
+    SiMaVP   & \textbf{30.09} & \textbf{134.05} & \textbf{44.14} & \textbf{0.9812} \\
+    \hline
+    \end{tabular}
+\end{table}
+
