@@ -1,5 +1,6 @@
-\chapter{Literature Review}
-Cloud contamination in optical remote sensing imagery hinders continuous Earth observation, limiting applications such as crop monitoring and land cover classification. Synthetic Aperture Radar (SAR) systems can penetrate clouds, enabling data acquisition in all weather conditions. This capability makes SAR data valuable for filling gaps in optical time series, driving research into SAR–optical fusion and SAR-to-optical image translation for cloud removal.
+\section{Related Work}\label{relatedWork}
+
+Cloud contamination in optical remote sensing imagery hinders continuous Earth observation, limiting applications such as crop monitoring and land cover classification. Synthetic Aperture Radar (SAR) systems can penetrate clouds, enabling data acquisition in all weather conditions. This capability makes SAR data valuable for filling gaps in optical time series, driving research into SAR-optical fusion and SAR-to-optical image translation for cloud removal.
 
 Early methods leveraged traditional signal processing techniques. Huang et al.~\cite{huang2015} introduced sparse representation-based cloud removal using SAR data, which Xu et al.~\cite{xu2016} extended via multi-temporal dictionary learning. These approaches, however, struggled under heavy cloud cover or highly dynamic surface changes.
 
@@ -11,6 +12,8 @@ Recent models show increasing complexity: Naderi Darbaghshahi et al.~\cite{nader
 
 Diffusion models have found their way into this field: Bai et al.~\cite{bai2023} proposed a conditional diffusion model; Bai et al.~\cite{bai2024} extended it with color supervision; Zou et al.~\cite{zou2023} introduced the efficient DiffCR framework.
 
-Vision Transformers (ViT) also made inroads: Dosovitskiy et al.~\cite{dosovitskiy2020} introduced the original ViT, while Park et al.~\cite{park2025} integrated multiscale ViT blocks into a cGAN for SAR-optical tasks. However, ViTs are computationally intensive.
+Vision Transformers (ViT) also made inroads: Dosovitskiy et al.~\cite{dosovitskiy2020} introduced the original ViT, while Park et al.~\cite{park2025} integrated multiscale ViT blocks into a cGAN for SAR-optical tasks. However, ViTs are computationally intensive. Swin-UNet~\cite{swinunet2023} remains a benchmark transformer-based segmentation model. 
 
-Alternatives emerged via SSMs: Gu \& Dao~\cite{gu2023} introduced Mamba—an efficient, linear-complexity sequence model. U-Mamba~\cite{umamba2024} adapted this into a U-Net architecture, and Swin-UMamba~\cite{swinumamba2024} enhanced it further using ImageNet pretraining. Swin-UNet~\cite{swinunet2023} remains a benchmark transformer-based segmentation model. 
+Alternatives emerged via SSMs: Gu \& Dao~\cite{gu2023} introduced Mamba, an efficient, linear-complexity sequence model. U-Mamba~\cite{umamba2024} adapted this into a U-Net architecture, and Swin-UMamba~\cite{swinumamba2024} enhanced it further using ImageNet pretraining.
+
+In this work, we focus on four architectures for SAR-to-optical translation and cloud removal: GAN, Swin-UNet, U-Mamba, and a novel UNet-Mamba hybrid introduced here. These models represent three major paradigms (GANs, transformers, and state space models) alongside our hybrid design. Their comparison is a balanced assessment of current approaches for cloud removal in optical remote sensing.

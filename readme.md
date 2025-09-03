@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 \begin{itemize}
     \item SAR-to-Optical Image Translation and Cloud Removal Based on Conditional Generative Adversarial Networks: Literature Survey, Taxonomy, Evaluation Indicators, Limits and Future Directions
     \url{https://www.mdpi.com/2072-4292/15/4/1137}
@@ -48,7 +47,6 @@
     \item THE SEN1-2 DATASET FOR DEEP LEARNING IN SAR-OPTICAL DATA FUSION
     \url{https://isprs-annals.copernicus.org/articles/IV-1/141/2018/}
 \end{itemize}
-=======
 Bachelor Thesis in the Field of Remote Sensing
 Topic:
 Generation of optical remote sensing data (Sentinel-2) based on radar remote sensing data (Sentinel-1) using generative AI.
@@ -77,4 +75,3 @@ Pan, H. (2020). “Cloud Removal for Remote Sensing Imagery via Spatial Attentio
 Patel, N. (2023). “Generative Artificial Intelligence and Remote Sensing: A Perspective on the Past and the Future.” IEEE Geoscience and Remote Sensing Magazine 11 (2): 86–100.
 
 Poornima, E. et al. (2023). “Deep Generative Models for Automated Dehazing Remote Sensing Satellite Images.” In E3S Web of Conferences, 430:01024. EDP Sciences.
->>>>>>> 5a1a8ad5fb2642fb38fdf823a0affdea282e7cdb

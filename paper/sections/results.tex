@@ -1,19 +1,19 @@
-\chapter{Experiments}
+\section{Results and Analysis}
 
 \begin{table}[]
-\centering
-\caption{Data cropped to 64x64, channels kept raw}
-\label{tab:experiment_results}
-\begin{tabular}{lcccc}
-\hline
-\textbf{Model} & \textbf{MAE} $\downarrow$ & \textbf{RMSE} $\downarrow$ & \textbf{PSNR (dB)} $\uparrow$ & \textbf{SSIM} $\uparrow$ \\
-\hline
-pix2pix  & 68.06 & 291.62 & 37.54 & 0.9545 \\
-SwinUnet & 41.58 & 181.62 & 41.11 & 0.9687 \\
-UMamba   & 35.14 & 158.47 & 42.67 & 0.9757 \\
-SiMaVP   & \textbf{31.41} & \textbf{139.95} & \textbf{43.75} & \textbf{0.9797} \\
-\hline
-\end{tabular}
+    \centering
+    \caption{Data cropped to 64x64, channels kept raw}
+    \label{tab:experiment_results}
+    \begin{tabular}{lcccc}
+    \hline
+    \textbf{Model} & \textbf{MAE} $\downarrow$ & \textbf{RMSE} $\downarrow$ & \textbf{PSNR (dB)} $\uparrow$ & \textbf{SSIM} $\uparrow$ \\
+    \hline
+    pix2pix  & 68.06 & 291.62 & 37.54 & 0.9545 \\
+    SwinUnet & 41.58 & 181.62 & 41.11 & 0.9687 \\
+    UMamba   & 35.14 & 158.47 & 42.67 & 0.9757 \\
+    SiMaVP   & \textbf{31.41} & \textbf{139.95} & \textbf{43.75} & \textbf{0.9797} \\
+    \hline
+    \end{tabular}
 \end{table}
 
 \begin{table}[]
@@ -47,3 +47,4 @@ SiMaVP   & \textbf{31.41} & \textbf{139.95} & \textbf{43.75} & \textbf{0.9797} \
     \hline
     \end{tabular}
 \end{table}
+    
