@@ -31,7 +31,7 @@ Since the 1980s, remote sensing has expanded through international efforts such 
 
 A summary of major milestones in the historical development of remote sensing platforms, from early balloon photography to modern satellite constellations, is illustrated in Figure~\ref{fig:RS_timeline}.
 
-\begin{figure}[H] % requires \usepackage{float}
+\begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{img/RS_timeline.png}
   \caption{Timeline of remote sensing platform development, from early airborne cameras to modern Earth observation satellites. Adapted from \cite{book_Satellite_RS}.}
@@ -69,19 +69,54 @@ Launched on 13 October 2017, the \textsc{Sentinel-5P} mission (Sentinel-5 Precur
 Looking into the future, six Sentinel Expansion missions will join the fleet. These include, among others, the Hyperspectral Imaging Mission, the Polar Ice and Snow Topography Altimeter, and the Anthropogenic Carbon Dioxide Monitoring mission \cite{ESA_Copernicus}.
 
 Since the focus of this work is on SAR and Optical data, only Sentinel-1 and 2 will be discussed in details in the next sections. 
-
 \subsection{Sentinel-1}
+The following description is based on the official SentiWiki resource provided by the European Space Agency \cite{sentiwiki}. 
+
+Sentinel-1, launched on 3 April 2014, constitutes the radar component of the European Copernicus Programme. The mission is designed as a constellation of two sun-synchronous, near-polar orbiting satellites in the same orbital plane, separated by 180° in phase. Equipped with C-band synthetic aperture radar (SAR) operating at 5.4~GHz, Sentinel-1 provides continuous, all-weather, day-and-night imaging capability. Sentinel-1A was followed by Sentinel-1B in 2016, which ceased operations after an anomaly in 2021 and was subsequently replaced by Sentinel-1C in 2024.  
+
+The SAR instrument actively transmits microwave signals towards the Earth and records the backscattered response. Both amplitude and phase are preserved, enabling the reconstruction of high-resolution images. Polarisation diversity further enhances information extraction, as different surfaces exhibit characteristic scattering signatures, supporting classification and retrieval of geophysical parameters.  
+
+Sentinel-1 operates in four exclusive acquisition modes: Stripmap (SM), Interferometric Wide Swath (IW), Extra-Wide Swath (EW), and Wave (WV). These modes achieve spatial resolutions down to 5~m and swath widths of up to 400~km. The system supports single (HH or VV) and dual (HH+HV or VV+VH) polarisation. While SM, IW, and EW modes allow a duty cycle of up to 30 minutes per orbit, WV mode extends this to 75 minutes. Over land, IW mode with VV+VH polarisation is the primary operational configuration, balancing revisit performance, service requirements, and the creation of a consistent long-term archive. For open-ocean observations, WV mode with VV polarisation is predominantly employed, while EW mode is mainly used for sea-ice monitoring and maritime surveillance in high-latitude regions. SM mode is activated only for small islands or in response to emergencies. Across all modes, products are provided at multiple processing levels, from raw SAR data (Level-0) to geophysical ocean products (Level-2 OCN).  
+
+The revisit capabilities of Sentinel-1 are particularly notable. In IW mode, a single satellite can achieve global coverage every 12 days, while the two-satellite constellation reduces the repeat cycle to six days, completing 175 orbits per cycle. These systematic observations, combined with advanced interferometric capabilities, enable the precise detection of land subsidence, structural deformation, and ground movements that are otherwise imperceptible. Such data are invaluable for urban planning, geohazard monitoring, and applications in mining, geology, and risk assessment for infrastructure and natural hazards \cite{sentiwiki}.  
 
 \subsection{Sentinel-2}
+The following description is based on the official SentiWiki resource provided by the European Space Agency \cite{sentiwiki}. 
 
+Sentinel-2 is the optical imaging mission of the Copernicus Programme, designed to provide systematic, high-resolution observations over land and coastal regions. The mission consists of a constellation of two sun-synchronous satellites in the same orbital plane, phased 180° apart, ensuring global coverage with a revisit frequency of five days at the Equator. Sentinel-2A was launched in 2015, followed by Sentinel-2B in 2017 and Sentinel-2C in September 2024, the latter ensuring mission continuity as Sentinel-2A approaches the end of its operational lifetime.  
 
+Each satellite carries a single payload: the Multi-Spectral Instrument (MSI). This passive optical sensor collects sunlight reflected from the Earth’s surface, splitting the incoming radiation into two focal plane assemblies: one covering the visible and near-infrared (VNIR) and the other the shortwave infrared (SWIR). The instrument has a swath width of 290~km, which is considerably wider than comparable missions such as Landsat 5/7 (185~km) or SPOT-5 (120~km).  
 
-\newpage
-\section{Data Availability and Limitations}
+The MSI samples 13 spectral bands at three spatial resolutions: four bands at 10~m (Blue, Green, Red, and Near-Infrared), six bands at 20~m (red-edge and SWIR), and three bands at 60~m (aerosol, water vapour, and cirrus). These bands span the VNIR to SWIR regions of the electromagnetic spectrum and are tailored to applications including vegetation and crop monitoring, land cover mapping, water quality assessment, snow and ice monitoring, cloud screening, and atmospheric correction. An overview of the spectral bands is provided in Table~\ref{tab:sentinel2_bands}.  
 
-\subsection{Focus: Cloud Removal}
+\begin{table}[h]
+\centering
+\caption{Sentinel-2 MSI spectral bands with central wavelength and spatial resolution \cite{sentiwiki}.}
+\label{tab:sentinel2_bands}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Band} & \textbf{Central Wavelength [nm]} & \textbf{Resolution [m]} \\ \midrule
+B1  & 443  (Aerosols)                & 60 \\
+B2  & 490  (Blue)                    & 10 \\
+B3  & 560  (Green)                   & 10 \\
+B4  & 665  (Red)                     & 10 \\
+B5  & 705  (Red edge)                & 20 \\
+B6  & 740  (Red edge)                & 20 \\
+B7  & 783  (Red edge)                & 20 \\
+B8  & 842  (NIR)                     & 10 \\
+B8a & 865  (Red edge)                & 20 \\
+B9  & 945  (Water vapour)            & 60 \\
+B10 & 1375 (Cirrus)                  & 60 \\
+B11 & 1610 (SWIR)                    & 20 \\
+B12 & 2190 (SWIR)                    & 20 \\ \bottomrule
+\end{tabular}
+\end{table}
 
-\subsection{Other Challenges}
+Sentinel-2 imagery is systematically and freely available, supporting several Copernicus services. The Copernicus Land Monitoring Service (CLMS) employs Sentinel-2 for land cover and forest mapping, crop monitoring, ecosystem assessment, and climate change adaptation. The Copernicus Marine Environment Monitoring Service (CMEMS) relies on Sentinel-2 to derive products such as turbidity, chlorophyll, suspended particulate matter, bathymetry, and ice analysis. The Copernicus Emergency Management Service (CEMS) uses Sentinel-2 extensively in disaster response, particularly for rapid mapping of floods, fires, and earthquakes. By enabling systematic, frequent, and global observations, Sentinel-2 has become a cornerstone of Copernicus services, supporting environmental monitoring, resource management, and disaster response worldwide \cite{sentiwiki}.  
+
+Together, Sentinel-1 and Sentinel-2 provide complementary SAR and optical observations, which form the basis of this thesis aiming to translate SAR imagery into its optical counterpart.
+
+\section{Cloud Removal}
 
 \section{Generative AI}
 \subsection{Pre-GenAI: Classical Approaches}
