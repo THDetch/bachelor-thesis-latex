@@ -1,6 +1,6 @@
 \chapter{Background}
 
-\section{Introduction to Remote Sensing}
+\section{Remote Sensing}
 Remote sensing (RS) is commonly defined as the acquisition of information about an object through sensors without direct physical contact. This information is obtained by detecting and measuring the modifications the object induces in its surrounding fields, which may include electromagnetic, acoustic, or potential fields \cite{book_Physics_Techniques_RS}.
 
 RS is a relatively recent scientific discipline characterized by its strong interdisciplinary nature. It draws upon a wide spectrum of fields, requiring practitioners to develop a broad foundational understanding of both natural and applied sciences. Effective research in remote sensing often involves collaboration with specialists in electromagnetic theory, spectroscopy, applied physics, geology, atmospheric sciences, oceanography, electrical engineering, and optical engineering \cite{book_Physics_Techniques_RS}.
@@ -117,6 +117,78 @@ Sentinel-2 imagery is systematically and freely available, supporting several Co
 Together, Sentinel-1 and Sentinel-2 provide complementary SAR and optical observations, which form the basis of this thesis aiming to translate SAR imagery into its optical counterpart.
 
 \section{Cloud Removal}
+As briefly mentioned in the sections above, optical remote sensing imagery, such as Sentinel-2 products, represents a key source of Earth observation data. Compared to SAR observations, multispectral images contain rich spectral information and are readily interpretable by the human eye. Such data play an essential role in a wide range of applications, including environmental monitoring, resource exploration, and disaster assessment. While the quality and quantity of satellite observations have dramatically increased in recent years, one common problem persists for optical remote sensing imagery: \textbf{cloud cover}.
+
+Based on findings from the International Satellite Cloud Climatology Project (ISCCP), average global cloud cover surpasses 66\% \cite{dl_cloud_detection_survey,aCGAN_fuse_sar_MS,CR_SEN2_dRNN}, with 55\% over land surface alone \cite{CR_SEN2_dRNN}, preventing optical satellites from acquiring valuable information about the Earth's surface due to the frequent presence of clouds in the imagery. In contrast to SAR instruments, optical sensors cannot penetrate clouds, resulting in considerable data gaps in both the spatial and temporal domains. For applications requiring consistent time series, e.g., agricultural monitoring, or where a specific scene must be observed at a given time, e.g., disaster monitoring, cloud cover represents a serious limitation \cite{CR_SEN2_dRNN}. The diversity of clouds —including thin and thick clouds as well as haze— together with the wide range of occlusion scenarios and their uneven distribution, poses an additional challenge for image reconstruction and the generalizability of cloud removal techniques\cite{CR_Advances_Review_ORS}.
+
+Consequently, removing these clouds and acquiring cloud-free optical data to retrieve surface information is of a theoretical significance and practical necessity. optical remote sensing imagery cloud removal aims to mitigate or eliminate cloud influence, thereby revealing more accurate and complete surface details \cite{CR_Advances_Review_ORS}. Research regard this problem, there have been wide range of attempets to solve it. These approaches for cloud removal can roughly be divided into four categories: (i) Single-image methods, (ii) multimodal-based methods, and (iii) multitemporal-based methods \cite{CR_Advances_Review_ORS}. 
+
+
+\begin{enumerate}[label=(\Alph*)]
+    \item \textbf{Singel-image methods:} Constrained by the limited acquisition capabilities of early remote sensing data, single-image cloud removal techniques attempted to restore surface information using only the cloudy optical image. Classical approaches employ statistical and physical models such as spatial similarity, frequency filtering, or atmospheric scattering models (e.g., the dark channel prior). With the advent of deep learning, CNNs, U-Nets, and GAN-based architectures have been applied to learn the mapping from cloudy to cloud-free domains, sometimes extended with unpaired learning schemes like CycleGANs. While these methods demonstrate effectiveness for thin or semi-transparent clouds, their reliance on information present in a single image limits their applicability to dense cloud cover. In such cases, they cannot reliably reconstruct surface features, which has motivated the exploration of external data sources such as SAR imagery
+    
+    \item \textbf{Multimodal-based methods:} Multimodal cloud removal strategies explicitly integrate auxiliary data from other sensors to improve optical image restoration. Multispectral-based methods exploit the differential sensitivity of spectral bands, but the most notable progress has been achieved by fusing synthetic aperture radar (SAR) with optical imagery. SAR-to-optical image translation has emerged as a powerful paradigm in this context, as SAR penetrates cloud layers and provides structural information that can guide optical reconstruction. A wide range of approaches have been proposed, including CNN-based fusion, conditional GANs (cGANs), and CycleGAN-style frameworks, which directly translate SAR features into optical-like imagery or combine them with partially corrupted optical inputs. These methods have proven especially effective in recovering surface information under dense and persistent cloud conditions, although challenges remain in terms of data registration, modality differences, and SAR-induced speckle noise
+    
+    \item \textbf{Multitemporal-based methods:} Multitemporal approaches leverage repeated acquisitions of the same location at different times to fill in cloud-covered areas. Nonblind methods use cloud masks to guide restoration, whereas blind methods directly infer cloud-free information from temporal sequences. Techniques range from traditional model-driven approaches, such as low-rank tensor decomposition and sparse representation, to data-driven deep learning frameworks that learn spatial–temporal mappings. Importantly, recent research has begun to combine multitemporal optical data with SAR, creating hybrid SAR–optical time series methods that enhance robustness under persistent cloud cover and enable more accurate SAR-to-optical translation. Although highly effective for dense cloud removal, these approaches face challenges such as geometric misalignment, temporal variability in land cover, and the need for large, paired training datasets
+\end{enumerate}
+
+
+\begin{table}[ht]
+\centering
+\caption{Summary of cloud removal categories, their advantages and limitations \cite{CR_Advances_Review_ORS, sar_2_opt_CGAN_survey_taxonomy}.}
+\label{tab:cloud_removal_categories}
+\begin{adjustbox}{max width=\textwidth, keepaspectratio=false}
+\begin{tabular}{p{2.5cm} p{6cm} p{6cm} p{3cm}}
+\toprule
+\textbf{Category} & \textbf{Advantages} & \textbf{Limitations} & \textbf{Representative literature} \\
+\midrule
+\textbf{Single-image} & 
+\begin{itemize}[nosep,leftmargin=*]
+  \item No auxiliary data required (cost- and time-efficient).
+  \item Effective for thin or semi-transparent clouds.
+  \item Straightforward implementation with statistical/physical models or deep learning.
+\end{itemize} &
+\begin{itemize}[nosep,leftmargin=*]
+  \item Ineffective for dense or opaque clouds.
+  \item Often introduces artifacts or color distortions.
+  \item Deep learning requires large paired datasets, which are hard to obtain.
+\end{itemize} &
+\cite{single_variation} \cite{single_haze_removal_dark_prior} \cite{single_artifact_free_CR_GAN} \cite{single_thin_CR_ORS_GAN_phys} \cite{single_multi_DR_CR} \cite{single_CR_DLM_matting} \cite{single_AGLC_GAN} \cite{single_PNBT_CR} \cite{single_CGAN_scattering_martian} \\
+\midrule
+\textbf{Multimodal} &
+\begin{itemize}[nosep,leftmargin=*]
+  \item Integrates complementary information from other sensors.
+  \item Multispectral bands provide spectral redundancy.
+  \item SAR–optical fusion enables SAR-to-optical translation, penetrating cloud layers.
+  \item Suitable for both thin and thick clouds.
+\end{itemize} &
+\begin{itemize}[nosep,leftmargin=*]
+  \item Requires accurate registration of heterogeneous data.
+  \item SAR data introduces speckle noise.
+  \item High computational complexity and preprocessing effort.
+\end{itemize} &
+\cite{A_cGAN_fuse_sar_MS_CR} \cite{sar2opt_cGAN_Optim_oppr_limits} \cite{syn_ms_sar_opt_MT_cGAN} \cite{CR_SEN2_dRNN} \cite{GAN_gen_synt_MS} \cite{s2o_ViT_cGAN} \cite{CR_RS_GAN_s2o} \cite{s2o_Thermodynamics} \cite{c_diffusion_s2o} \cite{s2o_color_super_diff} \cite{S2MS_GAN} \cite{SAR_DeCR} \\
+\midrule
+\textbf{Multitemporal} &
+\begin{itemize}[nosep,leftmargin=*]
+  \item Exploits temporal redundancy to reconstruct cloudy regions.
+  \item Effective for dense and extensive cloud cover.
+  \item Deep learning models can capture spatial–temporal correlations.
+  \item Can be extended with SAR–optical time series for improved robustness.
+\end{itemize} &
+\begin{itemize}[nosep,leftmargin=*]
+  \item Sensitive to geometric misalignment and temporal variability.
+  \item Requires consistent multitemporal datasets, which may be unavailable.
+  \item Landscape or seasonal changes reduce restoration accuracy.
+\end{itemize} &
+\cite{syn_ms_sar_opt_MT_cGAN} \cite{CR_RS_spati_atten_GAN} \cite{UnCRtainTS} \cite{assessing_MT_cGANS_s2o_crop} \cite{DiffCR} \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+In summary, cloud removal research spans single-image, multimodal, and multitemporal strategies, each with distinct advantages and limitations, as summarized in Table~\ref{tab:cloud_removal_categories} together with representative literature. Among these, SAR-to-optical image translation has recently emerged as a highly promising direction, as it leverages the cloud-penetrating capability of SAR while producing optical-like imagery suitable for interpretation and analysis. This thesis builds on this line of research by systematically exploring and advancing SAR-to-optical translation methods for cloud removal.
+
 
 \section{Generative AI}
 \subsection{Pre-GenAI: Classical Approaches}
