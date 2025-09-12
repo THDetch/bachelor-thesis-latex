@@ -38,7 +38,6 @@ A summary of major milestones in the historical development of remote sensing pl
   \label{fig:RS_timeline}
 \end{figure}
 
-
 \section{Copernicus: Europe's eyes on Earth}
 Copernicus, known as the most ambitious Earth observation programme, is the Earth observation component of the European Union's Space Programme.
 It is funded, coordinated, and managed by the European Commission in cooperation with partners such as the European Space Agency (ESA) and the European Organisation for the Exploitation of Meteorological Satellites (EUMETSAT)\footnote{https://www.eumetsat.int/}. The programme was named after the European scientist and observer Nicolaus Copernicus\footnote{https://www.biography.com/scientists/nicolaus-copernicus}. It integrates satellite and in situ observations (e.g., ground stations, airborne and seaborne instruments) to provide reliable, up-to-date information. Its services cover six domains: land, marine, atmosphere, emergency management, security, and climate change. 
@@ -128,7 +127,7 @@ Consequently, removing clouds and obtaining cloud-free optical data to retrieve 
 
   \item \textbf{Multimodal-based methods:} Multimodal strategies explicitly integrate auxiliary data from other sensors to improve optical image restoration. Multispectral-based methods exploit the differential sensitivity of spectral bands, but the most notable progress has been achieved by fusing synthetic aperture radar (SAR) with optical imagery. A representative work is Meraner et al. \cite{CR_SEN2_dRNN}, who proposed the DSen2-CR framework, a deep residual network that combines Sentinel-1 and Sentinel-2 data to improve reconstructions under thick cloud cover and preserve spectral fidelity. Likewise, Grohnfeldt et al. \cite{A_cGAN_fuse_sar_MS_CR} demonstrated the potential of conditional GANs (cGANs) to fuse SAR and multispectral data for cloud removal, highlighting the advantages of adversarial training in capturing nonlinear relationships between modalities. More recently, Xu et al. \cite{GLF_CR} presented the GLF-CR model, which applies a global–local fusion strategy to better exploit SAR features for cloud removal. SAR-to-optical image translation has thus emerged as a powerful paradigm in this context, as SAR penetrates cloud layers and provides structural information that can guide optical reconstruction. A wide range of approaches have been proposed, including CNN-based fusion, cGANs, and CycleGAN-style frameworks, which either translate SAR features into optical-like imagery or combine them with partially corrupted optical inputs. These methods have proven especially effective in recovering surface information under dense and persistent cloud conditions, although challenges remain in terms of data registration, modality differences, and SAR-induced speckle noise.
 
-  \item \textbf{Multitemporal-based methods:} Multitemporal approaches leverage repeated acquisitions of the same location at different times to fill in cloud-covered areas. \textit{Non-blind} methods use cloud masks to guide restoration, whereas \textit{blind} methods directly infer cloud-free information from temporal sequences. A classical example is the work of Xu et al. \cite{CR_spars_repre_MT_dict_L}, who proposed a sparse representation framework with multitemporal dictionary learning (MDL) that learns dictionaries from both cloudy and clear images, effectively reconstructing areas obscured by thin and thick clouds without requiring explicit cloud masks. More recently, Ebel et al. \cite{UnCRtainTS} introduced UnCRtainTS, an attention-based deep learning model that not only reconstructs cloud-free images from Sentinel-1/2 time series but also quantifies pixel-wise uncertainty, providing reliability measures alongside the reconstructed outputs. Techniques therefore range from traditional model-driven approaches, such as low-rank tensor decomposition and sparse representation, to data-driven deep learning frameworks that learn spatio-temporal mappings. Recent research has also begun to combine multitemporal optical data with SAR, creating hybrid SAR–optical time series methods that enhance robustness under persistent cloud cover and enable more accurate SAR-to-optical translation. Although highly effective for dense cloud removal, these approaches face challenges such as geometric misalignment, temporal variability in land cover, and the need for large, paired training datasets \cite{CR_Advances_Review_ORS}.
+  \item \textbf{Multitemporal-based methods:} Multitemporal approaches leverage repeated acquisitions of the same location at different times to fill in cloud-covered areas. \textit{Non-blind} methods use cloud masks to guide restoration, whereas \textit{blind} methods directly infer cloud-free information from temporal sequences. A classical example is the work of Xu et al. \cite{CR_spars_repre_MT_dict_L}, who proposed a sparse representation framework with multitemporal dictionary learning (MDL) that learns dictionaries from both cloudy and clear images, effectively reconstructing areas obscured by thin and thick clouds without requiring explicit cloud masks. More recently, Ebel et al. \cite{UnCRtainTS} introduced UnCRtainTS, an attention-based deep learning model that not only reconstructs cloud-free images from Sentinel-1/2 time series but also quantifies pixel-wise uncertainty, providing reliability measures alongside the reconstructed outputs. Techniques therefore range from traditional model-driven approaches, such as low-rank tensor decomposition and sparse representation, to data-driven deep learning frameworks that learn spatio-temporal mappings. Recent research has also begun to combine multitemporal optical data with SAR, creating hybrid SAR–optical time series methods that enhance robustness under persistent cloud cover and enable more accurate SAR-to-optical translation. Although highly effective for dense cloud removal, these approaches face challenges such as geometric misalignment, temporal variability in land cover \cite{expl_ML_CR_Cameroon}, and the need for large, paired training datasets \cite{CR_Advances_Review_ORS}.
 
 \end{enumerate}
 
@@ -182,21 +181,44 @@ As shown in Table~\ref{tab:cloud_removal_categories}, research on cloud removal 
   \item Requires consistent multitemporal datasets, which may be unavailable.
   \item Landscape or seasonal changes reduce restoration accuracy.
 \end{itemize} &
-\cite{syn_ms_sar_opt_MT_cGAN} \cite{CR_RS_spati_atten_GAN} \cite{UnCRtainTS} \cite{assessing_MT_cGANS_s2o_crop} \cite{DiffCR} \\
+\cite{syn_ms_sar_opt_MT_cGAN} \cite{CR_RS_spati_atten_GAN} \cite{CR_spars_repre_MT_dict_L} \cite{UnCRtainTS} \cite{assessing_MT_cGANS_s2o_crop} \cite{DiffCR} \\
 \bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
 
-In summary, cloud removal research spans single-image, multimodal, and multitemporal strategies, each with distinct advantages and limitations, as outlined in Table~\ref{tab:cloud_removal_categories} together with representative literature. Among these, SAR-to-optical image translation has recently emerged as a particularly promising direction, as it leverages the cloud-penetrating capability of SAR while producing optical-like imagery suitable for interpretation and analysis. This thesis builds on this line of research by systematically investigating and advancing SAR-to-optical translation methods for cloud removal.
+In summary, cloud removal research spans single-image, multimodal, and multitemporal strategies, each with distinct advantages and limitations. Among these, SAR-to-optical image translation has recently emerged as a particularly promising direction, as it leverages the cloud-penetrating capability of SAR while producing optical-like imagery suitable for interpretation and analysis. This thesis builds on this line of research by systematically investigating and advancing SAR-to-optical translation methods for cloud removal.
 
-\section{Generative AI}
-\subsection{Pre-GenAI: Classical Approaches}
-\subsection{Deep Learning and Computer Vision}
-\subsection{Generative Adversarial Networks (GANs)}
-\subsection{Diffusion Models}
-\subsection{Vision Transformer}
-\subsection{Vision Mamba}
+\section{Generative Artificial Intelligence}
+
+Generative Artificial Intelligence (GenAI) refers to a class of machine learning models designed to generate new data samples that resemble a given training distribution, such as images, text, or audio. Unlike discriminative models, which focus on classifying or predicting labels, generative models learn (an approximation to) the underlying probability distribution of the data to create novel instances~\cite{genAI_HS_sens_data_review}. This capability has revolutionized fields like computer vision, where GenAI is used for tasks including image synthesis, style transfer, and domain adaptation. In the context of remote sensing, GenAI enables, among others, the creation of synthetic imagery, such as translating radar data to optical-like representations, which is particularly useful for overcoming environmental limitations like cloud cover, as well as data fusion for both heterogeneous and homogeneous imagery, enhancing spatial, spectral, and temporal resolution and mitigating the limitations of individual sensors~\cite{RS_Data_Fusion_GANs_sota}.
+
+One of the foundational frameworks in GenAI is the Generative Adversarial Network (GAN), introduced in 2014 by Goodfellow et~al.~\cite{GANs_Goodfellow}. As depicted in Figure~\ref{fig:GANs}, a GAN consists of two neural networks: a generator ($G$) that produces synthetic data from random noise, and a discriminator ($D$) that evaluates whether the generated data is real or fake. These components are trained adversarially—the generator aims to fool the discriminator, while the discriminator improves its ability to distinguish real from generated samples—leading to increasingly realistic outputs. This adversarial process minimizes a minimax loss function, allowing GANs to capture complex data distributions without explicit probabilistic modeling. Formally, the optimization problem is defined as:
+\begin{equation}
+\min_{G} \max_{D} \; V(D,G) = \mathbb{E}_{x \sim p_{\text{data}}(x)}[\log D(x)] 
++ \mathbb{E}_{z \sim p_{z}(z)}[\log (1 - D(G(z)))] ,
+\end{equation}
+
+where $D(x)$ denotes the discriminator’s estimate of the probability that $x$ comes from the real data distribution $p_{\text{data}}$, and $G(z)$ generates samples from latent noise $z \sim p_z$.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{img/GANs.png}
+  \caption{GANs Architecture: Source: https://developers.google.com/}
+  \label{fig:GANs}
+\end{figure}
+
+Building on GANs, conditional GANs (cGANs)~\cite{cGANs_mirza} incorporate additional input conditions, such as class labels or reference images, to guide the generation process toward specific outputs. In image-to-image translation settings (e.g., pix2pix-style formulations), cGANs typically require paired datasets for supervised training, which is non-trivial given the complexity of acquiring and registering satellite imagery. A key extension for unpaired image translation is the Cycle-Consistent GAN (CycleGAN)~\cite{cycle_GANs}, proposed in 2017. CycleGAN addresses the challenge of learning mappings between two domains (e.g., SAR to optical) without paired training examples by enforcing cycle consistency: translating an image from domain $X$ to $Y$ and back to $X$ should reconstruct the original. This is achieved through a cycle-consistency loss, combined with adversarial losses, making it suitable for RS applications where perfectly aligned SAR–optical pairs are scarce. Nevertheless, given the weak supervision during CycleGAN training, it is prone to texture/detail distortions~\cite{RS_Data_Fusion_GANs_sota}, often resulting in performance comparable to other GAN-based models~\cite{assessing_MT_cGANS_s2o_crop}.
+
+For the problem of RS data fusion, many studies do not directly reuse off-the-shelf GAN architectures but instead adapt them to better accommodate multisource fusion. Among these, cGANs and CycleGANs are the most commonly adopted families in numerous fusion studies~\cite{RS_Data_Fusion_GANs_sota}.
+
+Despite the remarkable performance of GAN-based approaches in cloud removal, several challenges remain. They are inherently difficult to train and can suffer from issues such as mode collapse, leading to distorted or repetitive outputs, especially at high spatial resolutions~\cite{GAN_gen_synt_MS}. Moreover, cloud morphology and distribution exhibit substantial diversity and complexity, imposing demanding requirements on training and application of GAN-based methods~\cite{DiffCR, CR_Advances_Review_ORS}.
+
+More recently, diffusion models have emerged as a powerful alternative to GANs, offering improved stability and higher-fidelity generation~\cite{c_diffusion_s2o}. Denoising Diffusion Probabilistic Models (DDPMs)~\cite{DDPM_2020}, introduced in 2020, model data generation as a reverse diffusion process: starting from Gaussian noise, the model iteratively denoises the input to produce a sample from the target distribution. Unlike GANs, which can suffer from mode collapse (limited output diversity), diffusion models provide probabilistic sampling and better coverage of diverse data modes. In RS, diffusion-based approaches are gaining traction for tasks like cloud removal, where they can generate realistic optical images by conditioning on SAR inputs.
+
+GenAI's application in remote sensing, particularly for multimodal data fusion, leverages these models' ability to bridge domain gaps. For instance, GANs and diffusion models can synthesize cloud-free optical imagery from SAR, preserving structural details while enhancing interpretability. However, challenges such as training instability in GANs and high computational costs in diffusion models persist, motivating ongoing research into hybrid architectures.
+
+\section{SAR-to-optical image translation}
 
 \section{Application and Relevance to KIWA}
 
