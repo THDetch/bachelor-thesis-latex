@@ -14,6 +14,12 @@
 \usepackage{tabularx}
 \usepackage{adjustbox}
 \usepackage{amsmath,amssymb,amsfonts}
+\usepackage{setspace}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\onehalfspacing     % for 1.5 spacing
+
 
 % \usepackage{cite} 
 
@@ -75,8 +81,14 @@
 
 
 
+% \bibliographystyle{IEEEtran}
+% \bibliography{references}
+
+\begingroup
+\setstretch{1.0}
 \bibliographystyle{IEEEtran}
 \bibliography{references}
+\endgroup
 
 \nocite{*}
 \end{document}
