@@ -17,6 +17,13 @@
 \usepackage{setspace}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{cite} 
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{array}
+\usepackage{textcomp}
+
 
 \onehalfspacing  
 \KOMAoptions{open=any}
@@ -59,14 +66,17 @@
 
 
 \input{title}
+\begingroup
+\setstretch{1.0}
 \input{declaration}
-
-\chapter*{Abstract}
-\addcontentsline{toc}{chapter}{Abstract}
+\endgroup
 
 
 \tableofcontents
-\cleardoublepage
+\include{abbreviations}
+% \chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+% \cleardoublepage
 
 \setcounter{page}{1}
 \pagenumbering{arabic}
@@ -91,5 +101,5 @@
 \bibliography{references}
 \endgroup
 
-\nocite{*}
+% \nocite{*}
 \end{document}

@@ -1,4 +1,32 @@
 \chapter{Methodology}
+\section{Problem Formulation}
+
+The task of SAR-to-optical translation can be formulated as a supervised image-to-image regression problem. Let
+\[
+X \in \mathbb{R}^{H \times W \times 2}
+\]
+denote the input SAR patch, where the two channels correspond to Sentinel-1 backscatter in VV and VH polarizations (expressed in the decibel scale(dB)). The corresponding reference optical patch is represented as
+\[
+Y \in \mathbb{R}^{H \times W \times N},
+\]
+where \(N\) denotes the number of channels corresponding to the multispectral bands of {Sentinel-2}.
+
+The objective is to learn a parametric mapping function
+\[
+f_\theta : \mathbb{R}^{H \times W \times 2} \; \rightarrow \; \mathbb{R}^{H \times W \times N},
+\]
+such that the generated multispectral image
+\[
+\hat{Y} = f_\theta(X)
+\]
+is as close as possible to the reference image \( Y \).
+
+Training this model requires minimizing a loss function \(\mathcal{L}\) that measures the discrepancy between \(\hat{Y}\) and \(Y\):
+\[
+\hat{\theta} = \arg\min_\theta \; \mathcal{L}(f_\theta(X), Y).
+\]
+
+In practice, \(\mathcal{L}\) is designed as a weighted combination of complementary terms (e.g., reconstruction, adversarial, perceptual, and spectral losses) that collectively encourage pixel-level accuracy, structural consistency, and spectral fidelity.
 
 \section{Datasets}
 \subsection{SEN12-MS}
