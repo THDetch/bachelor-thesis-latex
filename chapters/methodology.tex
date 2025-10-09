@@ -30,7 +30,7 @@ In practice, \(\mathcal{L}\) is designed as a weighted combination of complement
 
 \section{Datasets}
 \subsection{SEN12-MS}
-This thesis relies exclusively on the SEN12MS dataset~\cite{sen12ms_2019}, curated by Schmitt et al.. SEN12MS is a large-scale, globally distributed benchmark explicitly designed to advance research in multimodal Earth observation and deep learning. It comprises 180,662 georeferenced image triplets, each consisting of (i) dual-polarized Sentinel-1 synthetic aperture radar (SAR) data in VV and VH polarization ($\sigma^{0}$ backscatter values in decibel scale), (ii) full Sentinel-2 multispectral imagery spanning all 13 bands, and (iii) MODIS land cover maps derived from the MCD12Q1 product and resampled to 10 m resolution. Each triplet is stored as a 256 × 256 pixel GeoTIFF at 10 m ground sampling distance, corresponding to a spatial coverage of approximately 2.56 × 2.56 km per patch.
+This thesis relies exclusively on the SEN12MS dataset~\cite{sen12ms_2019}, curated by Schmitt et al.. SEN12MS is a large-scale, globally distributed benchmark explicitly designed to advance research in multimodal Earth observation and deep learning. It comprises 180,662 georeferenced image triplets, each consisting of (i) dual-polarized Sentinel-1 synthetic aperture radar (SAR) data in VV and VH polarization ($\sigma^{0}$ backscatter values in decibel scale), (ii) full Sentinel-2 multispectral imagery spanning all 13 bands, and (iii) MODIS land cover maps derived from the MCD12Q1 product and resampled to 10 m resolution. Each triplet is stored as a 256 × 256 pixel GeoTIFF at 10 m ground sampling distance, corresponding to a spatial coverage of approximately 2.56 × 2.56 km per patch. The dataset has a total size of 510 GB, reflecting its high complexity, diversity, and spatial resolution.
 
 The Sentinel-1 component originates from ground-range-detected (GRD) products acquired in interferometric wide swath (IW) mode. These data were radiometrically calibrated and orthorectified against SRTM or ASTER digital elevation models to ensure accurate geolocation. The Sentinel-2 imagery was curated using a cloud-free mosaicking workflow on Google Earth Engine: within each region of interest (ROI), multiple observations collected during a given meteorological season of 2017 were composited such that cloud-contaminated pixels were systematically excluded. This procedure ensured that every ROI is represented by seasonally consistent, nearly cloud-free multispectral data. Finally, the MODIS land cover maps were used to generate categorical reference layers; however, due to their relatively coarse native resolution (500 m), they are subject to spatial inaccuracies even after upsampling.
 
@@ -111,9 +111,6 @@ SEN12MS addressed these limitations by introducing full multispectral coverage, 
 
 A comparsion of these different datasets is provided in Table~\ref{tab:sen12_datasets}. In this thesis, however, the focus remains on the SEN12MS dataset, leveraging its multimodal SAR and multispectral imagery for the study of SAR-to-optical translation.
 
-% in preamble:
-% \usepackage{array,booktabs,adjustbox}
-% ragged-right p-columns
 \newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
 
 \begin{table}[!h]
@@ -180,10 +177,18 @@ A comparsion of these different datasets is provided in Table~\ref{tab:sen12_dat
     \end{adjustbox}
 \end{table}
 
+\subsection{Preprocessing Pipeline}
+\label{subsec:preprocessing}
+The SEN12-MS dataset is divided into four subsets, each corresponding to a meteorological season. Due to the large size of the full dataset, which makes conducting multiple experiments and ablations computationally demanding, only the winter subset (the smallest) was used for training and experiments. This subset contains 31,825 paired images, each consisting of dual-polarized Sentinel-1 SAR data and 13-band Sentinel-2 optical imagery. A custom Python preprocessing pipeline was implemented using \textsc{Rasterio}, \textsc{NumPy}, and \textsc{GDAL} to efficiently stream, normalize, and store the data in a ready-to-train format.  
+
+Following common practices in the literature, Sentinel-1 backscatter values (in decibels) were clipped to fixed physical ranges of \(-25\,\text{dB}\) to \(0\,\text{dB}\) for the VV channel and \(-32.5\,\text{dB}\) to \(0\,\text{dB}\) for the VH channel to suppress noise and radiometric outliers. Similarly, Sentinel-2 reflectance values were clipped to the range \(0\) to \(10{,}000\), corresponding to top-of-atmosphere scaled reflectances. After extensive experimentation with different clipping strategies, including per-band clipping based on the 2nd and 98th percentiles, the fixed ranges commonly used in the literature were found to produce the most consistent and stable results. 
+
+After clipping, all values were linearly normalized to the \textit{tanh} range \([-1, 1]\), consistent with the \texttt{Tanh} activation used in the generator’s output layer. The original spatial resolution of \(256 \times 256\) pixels was maintained, and no data augmentation was applied, as the dataset already exhibits substantial spatial and spectral diversity.
+
 
 \section{Models}
 \subsection{Pix2Pix Model}
-The image translation task in this thesis is addressed using the \textit{pix2pix} framework, introduced by Isola et al.~\cite{pix2pix_2018}. Pix2pix is based on the concept of \textit{conditional generative adversarial networks} (cGANs), which extend the original GAN formulation by conditioning both the generator and discriminator on an input image. In this setup, the generator $G$ learns to map an input image $x$ to an output image $y$, while the discriminator $D$ learns to distinguish between real image pairs $\{x, y\}$ and synthesized pairs $\{x, G(x)\}$. This adversarial objective enforces that generated outputs are not only realistic but also structurally consistent with the given input.
+The image translation task in this thesis is addressed using the \textit{pix2pix} model, introduced by Isola et al.~\cite{pix2pix_2018}. Pix2pix is based on the concept of conditional generative adversarial networks (cGANs), which extend the original GAN formulation by conditioning both the generator and discriminator on an input image. In this setup, the generator $G$ learns to map an input image $x$ to an output image $y$, while the discriminator $D$ learns to distinguish between real image pairs $\{x, y\}$ and synthesized pairs $\{x, G(x)\}$. This adversarial objective enforces that generated outputs are not only realistic but also structurally consistent with the given input.
 
 Formally, the cGAN loss is defined as:
 \begin{equation}
@@ -211,13 +216,85 @@ Training alternates between updating $D$ to improve its ability to classify real
 \paragraph{Relevance to this work.}  
 The pix2pix framework provides a principled and general-purpose solution for image-to-image translation tasks. In the context of this thesis, it is employed to learn mappings from Sentinel-1 SAR inputs to Sentinel-2 multispectral optical outputs. The combination of adversarial and reconstruction losses, together with the U-Net generator and PatchGAN discriminator, makes pix2pix particularly suitable for producing sharp, realistic, and structurally aligned multispectral predictions.
 
+\section{Training Procedure}
+\subsection{Experimental Setup}
+All experiments were implemented in Python~3.11 using the official \texttt{Pix2Pix} implementation\footnote{\url{https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix}}. Training was conducted on an NVIDIA RTX~A5000 GPU with CUDA acceleration. The training, validation, and test sets were derived from the preprocessed SEN12-MS subset described in Section~\ref{subsec:preprocessing}. Each sample consisted of a Sentinel-1 SAR input patch (VV and VH channels) paired with the corresponding Sentinel-2 optical patch comprising 13 spectral bands.
+
+\subsection{Loss Functions}
+The loss function employed in the experiments consisted of multiple components. Conditional GAN (cGAN) models, such as Pix2Pix, typically optimize a weighted sum of an adversarial loss and a reconstruction loss. By default, Pix2Pix uses the Binary Cross-Entropy (BCE) loss for the adversarial component and the Mean Absolute Error (MAE), also referred to as the $\mathrm{L1}$ loss, for image reconstruction. However, during preliminary experiments, training instabilities and slow divergence were observed, suggesting the presence of vanishing gradient issues. To mitigate these effects, the adversarial BCE loss was replaced with the Least Squares GAN (LSGAN) loss, implemented as the Mean Squared Error (MSE) loss, which is known to provide more stable gradients and smoother convergence.
+
+In addition to the LSGAN and $\mathrm{L1}$ losses, the LPIPS and SSIM losses were also incorporated during training. Experiments with different combinations of these loss terms indicated that the best results were achieved when all four were combined. 
+
+The overall objective function can be expressed as
+\begin{equation}
+\mathcal{L}_{\text{total}} =
+\mathcal{L}_{\text{GAN}} +
+\lambda_{\text{L1}} \mathcal{L}_{\text{L1}} +
+\lambda_{\text{SSIM}} \mathcal{L}_{\text{SSIM}} +
+\lambda_{\text{LPIPS}} \mathcal{L}_{\text{LPIPS}}.
+\end{equation}
+
+where:
+\begin{itemize}
+    \item $\mathcal{L}_{\text{GAN}}$ denotes the adversarial loss, encouraging the generator to produce outputs indistinguishable from real images.
+    \item $\mathcal{L}_{\text{L1}}$ represents the pixel-wise reconstruction loss (Mean Absolute Error), enforcing global structural similarity between the generated and target images.
+    \item $\mathcal{L}_{\text{SSIM}}$ is the Structural Similarity Index Measure loss, promoting local structural consistency.
+    \item $\mathcal{L}_{\text{LPIPS}}$ denotes the Learned Perceptual Image Patch Similarity loss, which captures high-level perceptual differences.
+    \item $\lambda_{\text{L1}}, \lambda_{\text{SSIM}},$ and $\lambda_{\text{LPIPS}}$ are weighting coefficients that control the relative contribution of each term.
+\end{itemize}
+
+In the experiments, the weighting coefficients were set to
+$\lambda_{\text{L1}} = 100.0$, 
+$\lambda_{\text{SSIM}} = 50.0$, and 
+$\lambda_{\text{LPIPS}} = 50.0$.
+These values were empirically determined to balance pixel-level accuracy, perceptual quality, and adversarial realism.
+
+To further assess the individual contribution of each loss component, an ablation study was conducted. The model was trained under different configurations, including combinations of the individual losses and the full combined objective. Quantitative and qualitative results of this ablation are presented and discussed in Section~\ref{sec:ablation_loss}.
+
+
+
+--SAR-to-Optical Image Translation Using Vision Transformer-Based CGAN
+why convential losses strugle, use a perceptual loss instead
+
+
+Adversarial loss, reconstruction loss (L1/L2), perceptual loss, spectral metrics (e.g., SAM).
+
+
+
+-- Cloud Removal in Remote Sensing Images Using Generative Adversarial Networks and SAR-to-Optical Image Translation
+
+\textcolor{red}{Our results also showed that adding the SSIM loss function to the classical pix2pix loss Effect of SSIM Loss Function: To demonstrate the impact of the SSIM loss function, we abandoned it in different modes. Table VII presents the results of our investigation. The results of the evaluation metrics improved by adding the SSIM loss function. The use of SSIM with L1 in both GANs scores the best results for all metrics.}
+
+
+\subsection{Hyperparameters}
+Optimizer, learning rate, batch size, epochs.
+
+\subsection{Training pipeline}
+
+\begin{algorithm}[H]
+\caption{Computation of Sentinel-2 Value Ranges}
+\begin{algorithmic}[1]
+\State \textbf{Input:} SEN12MS dataset (winter subset)
+\State \textbf{Output:} Minimum and maximum values per band for representative tiles
+\State
+\State Select the \texttt{winter} subset from SEN12MS
+\For{each Region of Interest (ROI) in the winter subset}
+    \State Randomly select one tile from the ROI
+    \State Load the corresponding Sentinel-2 image
+    \For{each spectral band $b$ in the image}
+        \State Compute $\min(b)$ and $\max(b)$ over all pixels
+    \EndFor
+\EndFor
+\State Report the per-band minimum and maximum values for each selected tile
+\end{algorithmic}
+\end{algorithm}
 
 \section{Evaluation Metrics}
 The effectiveness of SAR-to-optical image translation depends not only on the choice of translation models but also on the methods employed for quality assessment. Image Quality Assessment (IQA) serves two key purposes: (i) to objectively evaluate the quality of results produced by different models, and (ii) to guide the optimization of network architectures and algorithms~\cite{quality_assessment_S2OT}.
 
 In~\cite{quality_assessment_S2OT}, five IQA metrics—SSIM, FSIM, MSE, LPIPS, and DISTS—were compared through image restoration experiments to identify suitable measures for SAR-to-optical translation. Their results showed that SSIM, MSE, and LPIPS consistently aligned with human perception, converged reliably, and effectively captured both structural and textural details, whereas FSIM often failed to capture fine details and DISTS exhibited instability. Consequently, SSIM, MSE, and LPIPS were recommended as complementary metrics for pixel-level fidelity, structural similarity, and perceptual quality. Nevertheless, as summarized in Table~\ref{tab:iqa}, SSIM, PSNR, and SAM remain the most widely used indicators in SAR-to-optical translation, fusion, and cloud removal tasks, while LPIPS and MSE appear far less frequently. This distribution is consistent with the findings reported in the literature survey~\cite{sar_2_opt_CGAN_survey_taxonomy}.
 
-\textcolor{red}{TODO: specify which metrics will be used and why}
+% \textcolor{red}{TODO: specify which metrics will be used and why}
 
 \begin{table}[h!]
 \centering
@@ -251,7 +328,7 @@ Mean Square Error (MSE)
  & 2 \\
 \bottomrule
 \end{tabular}
-\caption{Common evaluation metrics for SAR-to-optical and cloud removal tasks.}
+\caption{Frequency of common evaluation metrics used in SAR-to-optical and cloud-removal studies.}
 \label{tab:iqa}
 \end{table}
 
@@ -294,30 +371,48 @@ where $f_l(\cdot)$ denotes the feature representation in the $l$-th layer of the
 
 By measuring differences in a deep feature space rather than raw pixel intensities, LPIPS reflects perceptual similarity and visual realism. Lower LPIPS values indicate that the generated image is closer to the reference in terms of human-perceived quality~\cite{CR_Advances_Review_ORS,DiffCR}, making this metric particularly useful for evaluating the naturalness of translated images.
 
-\paragraph{FID} 
-Introduced in 2018 by Heusel at el.~\cite{iqa_fid}, the Fréchet Inception Distance (FID) is a perceptual metric that evaluates the realism of generated images at the distributional level. Instead of comparing images pixel by pixel, FID measures the distance between the feature distributions of generated and reference images, extracted by a pretrained Inception network. Let $(\mu_r, \Sigma_r)$ and $(\mu_g, \Sigma_g)$ denote the mean and covariance of the reference and generated feature distributions, respectively. FID is defined as
+\paragraph{MAE \& RMSE}
+Similar to PSNR, the Mean Absolute Error (MAE) and Root Mean Square Error (RMSE) evaluate image reconstruction quality on a pixel-wise level. They are defined as follows:
 \begin{equation}
-\text{FID} = \| \mu_r - \mu_g \|_2^2 + \text{Tr}\left( \Sigma_r + \Sigma_g - 2(\Sigma_r \Sigma_g)^{1/2} \right).
+\mathrm{MAE} = \frac{1}{N} \sum_{i=1}^{N} \left| y_i - x_i \right|
 \end{equation}
 
-Lower FID values indicate closer alignment between generated and real image distributions. While LPIPS assesses pairwise perceptual similarity, FID captures distributional alignment, making the two metrics complementary.
+\begin{equation}
+\mathrm{RMSE} = \sqrt{\frac{1}{N} \sum_{i=1}^{N} \left( y_i - x_i \right)^2}
+\end{equation}
+
+where $x_i$ and $y_i$ denote the pixel intensity values of the reference (ground-truth) and generated images, respectively, and $N$ represents the total number of pixels, defined as $N = C \times H \times W$, with $C$, $H$, and $W$ being the number of channels, height, and width of the image.
+
+The Mean Absolute Error (MAE) measures the average absolute difference between corresponding pixels, providing a direct estimate of overall reconstruction accuracy. The Root Mean Square Error (RMSE), in contrast, penalizes larger deviations more heavily due to the squared term, making it more sensitive to outliers and localized reconstruction errors.
 
 
-\paragraph{Evaluation Protocol}
-The evaluation of SAR-to-optical translation performance was conducted using PSNR, SSIM, and SAM, complemented by a perceptual metric (LPIPS or FID). PSNR quantifies pixel-level fidelity, SSIM assesses local structural similarity, and SAM measures spectral consistency across all bands, which is critical in multispectral applications. To additionally capture perceptual realism beyond pixel-wise statistics, a deep feature–based perceptual score was employed, with LPIPS enabling pairwise comparisons and FID providing distributional similarity. For outputs with more than three bands, perceptual metrics were computed on a fixed RGB composite for both reference and prediction, and this limitation was explicitly acknowledged. This combination of metrics provides a comprehensive assessment covering spatial fidelity, structural integrity, spectral accuracy, and perceptual quality.
+% \paragraph{FID} 
+% Introduced in 2018 by Heusel at el.~\cite{iqa_fid}, the Fréchet Inception Distance (FID) is a perceptual metric that evaluates the realism of generated images at the distributional level. Instead of comparing images pixel by pixel, FID measures the distance between the feature distributions of generated and reference images, extracted by a pretrained Inception network. Let $(\mu_r, \Sigma_r)$ and $(\mu_g, \Sigma_g)$ denote the mean and covariance of the reference and generated feature distributions, respectively. FID is defined as
+% \begin{equation}
+% \text{FID} = \| \mu_r - \mu_g \|_2^2 + \text{Tr}\left( \Sigma_r + \Sigma_g - 2(\Sigma_r \Sigma_g)^{1/2} \right).
+% \end{equation}
 
+% Lower FID values indicate closer alignment between generated and real image distributions. While LPIPS assesses pairwise perceptual similarity, FID captures distributional alignment, making the two metrics complementary.
+
+\renewcommand{\arraystretch}{1.25} % increases row height by 25%
 \begin{table}[h!]
 	\centering
 	\caption{Summary of evaluation metrics for SAR-to-multispectral translation.}
 	\begin{tabularx}{\textwidth}{p{1.7cm}X X X}
-		\toprule 
+		\toprule
 		\textbf{Metric} & \textbf{Aspect Evaluated} & \textbf{Advantages} & \textbf{Limitations} \\
-		\midrule 
-		PSNR  & Pixel-level fidelity via mean squared error ratio & Simple, widely used, interpretable in terms of noise/distortion & Correlates weakly with human perception; sensitive to pixel shifts \\
+		\midrule
+		PSNR  & Pixel-level fidelity via mean squared error ratio & Simple, widely used, interpretable in terms of noise or distortion & Correlates weakly with human perception; sensitive to pixel shifts \\
 		SSIM  & Structural similarity (luminance, contrast, texture) & Captures perceptual structure better than PSNR; patch-based & Still intensity-based; limited correlation with perceptual realism \\
-		SAM   & Spectral fidelity across bands & Invariant to illumination; critical for multispectral data integrity & Ignores spatial/structural context; only reflects spectral angle \\
-		LPIPS & Perceptual similarity using deep features (pairwise) & Aligns well with human judgment; sensitive to high-level semantics & Requires pretrained CNN; limited to 3-channel inputs unless adapted \\
-		FID   & Distributional similarity in feature space & Evaluates realism of entire image sets; widely adopted in generative models & Requires large sample size; sensitive to preprocessing; assumes Gaussian feature distributions \\
+		SAM   & Spectral fidelity across bands & Invariant to illumination; critical for multispectral data integrity & Ignores spatial and structural context; only reflects spectral angle \\
+		MAE \& RMSE & Pixel-wise reconstruction accuracy & Provide direct quantitative estimates of average and large-magnitude errors; easy to interpret & Do not account for perceptual or structural quality; sensitive to scaling and outliers (especially RMSE) \\
+		LPIPS & Perceptual similarity using deep feature representations & Aligns well with human judgment; sensitive to high-level semantic differences & Requires pretrained CNN; limited to 3-channel inputs unless adapted \\
 		\bottomrule
 	\end{tabularx}
 \end{table}
+\renewcommand{\arraystretch}{1.0} % reset to default
+
+
+
+\paragraph{Evaluation Protocol} 
+The evaluation of the SAR-to-optical translation performance was carried out using a combination of quantitative and perceptual metrics. The primary quantitative metrics included PSNR, SSIM, and SAM, complemented by the perceptual metric LPIPS. PSNR quantifies pixel-level fidelity, SSIM assesses local structural similarity, and SAM measures spectral consistency across all spectral bands, which is particularly important in multispectral remote sensing applications. In addition, conventional error-based metrics, MAE and RMSE, were employed for validation. To further capture perceptual realism beyond pixel-wise statistics, the deep feature–based LPIPS metric was used to enable pairwise comparisons between generated and reference images. For outputs containing more than three spectral bands, the perceptual metric LPIPS were computed on a fixed RGB composite for both the reference and the generated images, and this limitation was explicitly acknowledged. Overall, this combination of metrics provides a comprehensive assessment encompassing spatial fidelity, structural integrity, spectral accuracy, and perceptual quality.
