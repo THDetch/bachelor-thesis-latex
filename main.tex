@@ -70,6 +70,7 @@
 \pagenumbering{roman}
 
 
+% \input{declaration}
 \input{title}
 \begingroup
 \setstretch{1.0}
@@ -90,13 +91,14 @@
 \pagenumbering{arabic}
 
 
-\input{chapters/introduction.tex}
+% \input{chapters/introduction.tex}
 \input{chapters/background.tex}
-\input{chapters/related-work.tex}
+% \input{chapters/related-work.tex}
 \input{chapters/methodology.tex}
-\input{chapters/experiments.tex}
-\input{chapters/discussion.tex}
-\input{chapters/conclusion.tex}
+\input{chapters/results.tex}
+\input{chapters/ablations.tex}
+% \input{chapters/discussion.tex}
+% \input{chapters/conclusion.tex}
 
 
 
@@ -110,6 +112,7 @@
 \bibliographystyle{IEEEtran}
 \bibliography{references}
 \endgroup
+
 
 % \nocite{*}
 \end{document}
