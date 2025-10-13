@@ -23,6 +23,11 @@
 \usepackage{algpseudocode}
 \usepackage{array}
 \usepackage{textcomp}
+\usepackage{anyfontsize}
+\usepackage{pifont}
+\usepackage{amssymb} 
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 
 
 \onehalfspacing  
@@ -73,6 +78,9 @@
 
 
 \tableofcontents
+\listoffigures
+\listoftables
+
 \include{abbreviations}
 % \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
@@ -94,6 +102,8 @@
 
 % \bibliographystyle{IEEEtran}
 % \bibliography{references}
+\appendix
+\input{chapters/appendix.tex}
 
 \begingroup
 \setstretch{1.0}

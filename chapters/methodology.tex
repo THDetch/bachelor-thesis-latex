@@ -93,7 +93,7 @@ The Sentinel-1 component originates from ground-range-detected (GRD) products ac
         \includegraphics[width=\linewidth]{img/ROIs1970_fall_s2_145_p100.png}
     \end{subfigure}
 
-    \caption{Sample pairs from the SEN12MS dataset. Top row: Sentinel-1 SAR patches (R: VV, G: VH, B: VV/VH). Bottom row: corresponding Sentinel-2 multispectral patches (only RGB bands).}
+    \caption[Sample SAR–optical pairs from SEN12MS]{Sample pairs from the SEN12MS dataset. Top row: Sentinel-1 SAR patches (R: VV, G: VH, B: VV/VH). Bottom row: corresponding Sentinel-2 multispectral patches (only RGB bands).}
     \label{fig:sen12ms_pairs}
 \end{figure}
 
@@ -115,7 +115,7 @@ A comparsion of these different datasets is provided in Table~\ref{tab:sen12_dat
 
 \begin{table}[!h]
     \centering
-    \caption{Comparison of datasets in the SEN12 family.}
+    \caption{Comparison of SEN12-family datasets.}
     \label{tab:sen12_datasets}
     \setlength{\tabcolsep}{4pt} % tighter horizontal padding
     \renewcommand{\arraystretch}{1.15} % a bit more vertical room
@@ -177,14 +177,13 @@ A comparsion of these different datasets is provided in Table~\ref{tab:sen12_dat
     \end{adjustbox}
 \end{table}
 
-\subsection{Preprocessing Pipeline}
+\subsection{Subset Selection \& Preprocessing}
 \label{subsec:preprocessing}
 The SEN12-MS dataset is divided into four subsets, each corresponding to a meteorological season. Due to the large size of the full dataset, which makes conducting multiple experiments and ablations computationally demanding, only the winter subset (the smallest) was used for training and experiments. This subset contains 31,825 paired images, each consisting of dual-polarized Sentinel-1 SAR data and 13-band Sentinel-2 optical imagery. A custom Python preprocessing pipeline was implemented using \textsc{Rasterio}, \textsc{NumPy}, and \textsc{GDAL} to efficiently stream, normalize, and store the data in a ready-to-train format.  
 
 Following common practices in the literature, Sentinel-1 backscatter values (in decibels) were clipped to fixed physical ranges of \(-25\,\text{dB}\) to \(0\,\text{dB}\) for the VV channel and \(-32.5\,\text{dB}\) to \(0\,\text{dB}\) for the VH channel to suppress noise and radiometric outliers. Similarly, Sentinel-2 reflectance values were clipped to the range \(0\) to \(10{,}000\), corresponding to top-of-atmosphere scaled reflectances. After extensive experimentation with different clipping strategies, including per-band clipping based on the 2nd and 98th percentiles, the fixed ranges commonly used in the literature were found to produce the most consistent and stable results. 
 
 After clipping, all values were linearly normalized to the \textit{tanh} range \([-1, 1]\), consistent with the \texttt{Tanh} activation used in the generator’s output layer. The original spatial resolution of \(256 \times 256\) pixels was maintained, and no data augmentation was applied, as the dataset already exhibits substantial spatial and spectral diversity.
-
 
 \section{Models}
 \subsection{Pix2Pix Model}
@@ -217,10 +216,12 @@ Training alternates between updating $D$ to improve its ability to classify real
 The pix2pix framework provides a principled and general-purpose solution for image-to-image translation tasks. In the context of this thesis, it is employed to learn mappings from Sentinel-1 SAR inputs to Sentinel-2 multispectral optical outputs. The combination of adversarial and reconstruction losses, together with the U-Net generator and PatchGAN discriminator, makes pix2pix particularly suitable for producing sharp, realistic, and structurally aligned multispectral predictions.
 
 \section{Training Procedure}
-\subsection{Experimental Setup}
-All experiments were implemented in Python~3.11 using the official \texttt{Pix2Pix} implementation\footnote{\url{https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix}}. Training was conducted on an NVIDIA RTX~A5000 GPU with CUDA acceleration. The training, validation, and test sets were derived from the preprocessed SEN12-MS subset described in Section~\ref{subsec:preprocessing}. Each sample consisted of a Sentinel-1 SAR input patch (VV and VH channels) paired with the corresponding Sentinel-2 optical patch comprising 13 spectral bands.
+The model training follows a standard adversarial optimization scheme combining generator and discriminator updates with additional perceptual constraints
+
+\subsection{Experimental Setup} All experiments were implemented in Python~3.11, PyTorch 2.4.0, and CUDA 12.4, using the official \texttt{Pix2Pix} implementation\footnote{\url{https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix}}. Training was conducted on an NVIDIA RTX~A5000 GPU with CUDA acceleration. The training, validation, and test sets were derived from the preprocessed SEN12-MS subset described in Section~\ref{subsec:preprocessing}. Each sample consisted of a Sentinel-1 SAR input patch (VV and VH channels) paired with the corresponding Sentinel-2 optical patch comprising 13 spectral bands.
 
 \subsection{Loss Functions}
+\label{subsec:losses}
 The loss function employed in the experiments consisted of multiple components. Conditional GAN (cGAN) models, such as Pix2Pix, typically optimize a weighted sum of an adversarial loss and a reconstruction loss. By default, Pix2Pix uses the Binary Cross-Entropy (BCE) loss for the adversarial component and the Mean Absolute Error (MAE), also referred to as the $\mathrm{L1}$ loss, for image reconstruction. However, during preliminary experiments, training instabilities and slow divergence were observed, suggesting the presence of vanishing gradient issues. To mitigate these effects, the adversarial BCE loss was replaced with the Least Squares GAN (LSGAN) loss, implemented as the Mean Squared Error (MSE) loss, which is known to provide more stable gradients and smoother convergence.
 
 In addition to the LSGAN and $\mathrm{L1}$ losses, the LPIPS and SSIM losses were also incorporated during training. Experiments with different combinations of these loss terms indicated that the best results were achieved when all four were combined. 
@@ -247,47 +248,48 @@ In the experiments, the weighting coefficients were set to
 $\lambda_{\text{L1}} = 100.0$, 
 $\lambda_{\text{SSIM}} = 50.0$, and 
 $\lambda_{\text{LPIPS}} = 50.0$.
-These values were empirically determined to balance pixel-level accuracy, perceptual quality, and adversarial realism.
+These values were empirically determined to balance pixel-level accuracy, perceptual quality, and adversarial realism. 
 
-To further assess the individual contribution of each loss component, an ablation study was conducted. The model was trained under different configurations, including combinations of the individual losses and the full combined objective. Quantitative and qualitative results of this ablation are presented and discussed in Section~\ref{sec:ablation_loss}.
+To further assess the individual contribution of each loss component, an ablation study was conducted. The model was trained under different configurations, including combinations of the individual losses and the full combined objective. Quantitative and qualitative results of this ablation are presented and discussed in Section~\ref{subsec:ablation_loss}. Except for the experiments dedicated to this loss ablation, all other trainings were performed using the full combination of the four loss functions.
 
+\subsection{Training Strategy}
+The network training followed a staged adversarial optimization scheme with alternating updates of the generator and discriminator. At the early stage of training, the generator was warmed up by being trained independently for the first 20~epochs to stabilize its predictions before introducing the discriminator. This step mitigates early training instabilities commonly observed in GAN-based frameworks, which were also encountered during experimentation. After the warm-up period, both networks were jointly optimized in an alternating fashion, where the discriminator was updated once per iteration, followed by a generator update (1:1 ratio between $G$ and $D$). The discriminator was trained to minimize the least-squares error between its predictions and the target real/fake labels, while the generator was optimized to minimize the composite objective described in the previous subsection.
 
+Training was performed for 150~epochs using a batch size of 16 and the Adam optimizer~\cite{adam_optimizer_2017} with a learning rate of $1\times10^{-4}$ and momentum parameters $(\beta_1, \beta_2) = (0.5, 0.999)$. To prevent overfitting and accelerate convergence, the generator’s learning rate was adaptively reduced using the \texttt{ReduceLROnPlateau} scheduler, which halves the rate when the validation $\mathrm{L1}$ loss stagnates. The discriminator’s learning rate was kept constant throughout training to maintain stable adversarial dynamics, as reducing it was found to introduce additional instability during preliminary experiments.
 
---SAR-to-Optical Image Translation Using Vision Transformer-Based CGAN
-why convential losses strugle, use a perceptual loss instead
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth,height=0.65\textheight]{img/training_curves.png}
+    \caption{Training and validation loss curves over 150~epochs.}
+    \label{fig:training_curve}
+\end{figure}
 
+Figure~\ref{fig:training_curve} illustrates the evolution of the training and validation losses over 150~epochs, together with the learning rate behavior. The training loss exhibits a steady decline, indicating stable convergence of the generator–discriminator optimization. The validation loss follows a similar trend with minor fluctuations, reflecting the stochastic nature of adversarial learning. The learning rate decreases automatically when the validation $\mathrm{L1}$ loss stagnates, as controlled by the \texttt{ReduceLROnPlateau} scheduler, leading to smoother convergence during the later stages of training.
 
-Adversarial loss, reconstruction loss (L1/L2), perceptual loss, spectral metrics (e.g., SAM).
+\subsection{Monitoring and Checkpointing}
+Model performance was monitored using both quantitative validation metrics and qualitative visualizations. After each epoch, the validation set was evaluated to compute the $\mathrm{L1}$, SSIM, and LPIPS metrics. The model achieving the lowest validation $\mathrm{L1}$ loss was saved as the best-performing checkpoint. Additionally, intermediate qualitative samples were generated every ten epochs by translating a fixed subset of Sentinel-1 patches to their corresponding optical outputs, allowing visual inspection of the training progression.
 
+All relevant training statistics, including generator and discriminator losses, learning rates, and validation metrics, were logged for subsequent analysis. Checkpoints were saved at the end of each epoch to enable resumption in case of interruptions. After training completion, the recorded metrics were used to generate loss and performance curves, which facilitated evaluation of convergence stability and model generalization.
 
+% \subsection{Training pipeline}
 
--- Cloud Removal in Remote Sensing Images Using Generative Adversarial Networks and SAR-to-Optical Image Translation
-
-\textcolor{red}{Our results also showed that adding the SSIM loss function to the classical pix2pix loss Effect of SSIM Loss Function: To demonstrate the impact of the SSIM loss function, we abandoned it in different modes. Table VII presents the results of our investigation. The results of the evaluation metrics improved by adding the SSIM loss function. The use of SSIM with L1 in both GANs scores the best results for all metrics.}
-
-
-\subsection{Hyperparameters}
-Optimizer, learning rate, batch size, epochs.
-
-\subsection{Training pipeline}
-
-\begin{algorithm}[H]
-\caption{Computation of Sentinel-2 Value Ranges}
-\begin{algorithmic}[1]
-\State \textbf{Input:} SEN12MS dataset (winter subset)
-\State \textbf{Output:} Minimum and maximum values per band for representative tiles
-\State
-\State Select the \texttt{winter} subset from SEN12MS
-\For{each Region of Interest (ROI) in the winter subset}
-    \State Randomly select one tile from the ROI
-    \State Load the corresponding Sentinel-2 image
-    \For{each spectral band $b$ in the image}
-        \State Compute $\min(b)$ and $\max(b)$ over all pixels
-    \EndFor
-\EndFor
-\State Report the per-band minimum and maximum values for each selected tile
-\end{algorithmic}
-\end{algorithm}
+% \begin{algorithm}[H]
+% \caption{Computation of Sentinel-2 Value Ranges}
+% \begin{algorithmic}[1]
+% \State \textbf{Input:} SEN12MS dataset (winter subset)
+% \State \textbf{Output:} Minimum and maximum values per band for representative tiles
+% \State
+% \State Select the \texttt{winter} subset from SEN12MS
+% \For{each Region of Interest (ROI) in the winter subset}
+%     \State Randomly select one tile from the ROI
+%     \State Load the corresponding Sentinel-2 image
+%     \For{each spectral band $b$ in the image}
+%         \State Compute $\min(b)$ and $\max(b)$ over all pixels
+%     \EndFor
+% \EndFor
+% \State Report the per-band minimum and maximum values for each selected tile
+% \end{algorithmic}
+% \end{algorithm}
 
 \section{Evaluation Metrics}
 The effectiveness of SAR-to-optical image translation depends not only on the choice of translation models but also on the methods employed for quality assessment. Image Quality Assessment (IQA) serves two key purposes: (i) to objectively evaluate the quality of results produced by different models, and (ii) to guide the optimization of network architectures and algorithms~\cite{quality_assessment_S2OT}.
@@ -328,7 +330,7 @@ Mean Square Error (MSE)
  & 2 \\
 \bottomrule
 \end{tabular}
-\caption{Frequency of common evaluation metrics used in SAR-to-optical and cloud-removal studies.}
+\caption[Common evaluation metrics in SAR-to-optical and cloud removal]{Frequency of common evaluation metrics used in SAR-to-optical and cloud-removal studies.}
 \label{tab:iqa}
 \end{table}
 
@@ -397,7 +399,7 @@ The Mean Absolute Error (MAE) measures the average absolute difference between c
 \renewcommand{\arraystretch}{1.25} % increases row height by 25%
 \begin{table}[h!]
 	\centering
-	\caption{Summary of evaluation metrics for SAR-to-multispectral translation.}
+	\caption[Evaluation metrics used summary]{Summary of evaluation metrics for SAR-to-multispectral translation.}
 	\begin{tabularx}{\textwidth}{p{1.7cm}X X X}
 		\toprule
 		\textbf{Metric} & \textbf{Aspect Evaluated} & \textbf{Advantages} & \textbf{Limitations} \\
