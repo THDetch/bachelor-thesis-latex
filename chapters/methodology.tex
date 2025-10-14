@@ -1,29 +1,30 @@
 \chapter{Methodology}
+This chapter outlines the methodological framework adopted for the SAR-to-optical translation task. It details the formulation of the problem as a supervised image-to-image regression, describes the datasets and preprocessing procedures used, and presents the model architectures and training strategies employed. In particular, the Pix2Pix conditional generative adversarial network (cGAN) serves as the core model for learning the mapping between Sentinel-1 SAR inputs and Sentinel-2 multispectral optical outputs. The chapter further elaborates on the design of the loss functions, optimization process, and experimental setup used to ensure stable and effective training. Finally, the evaluation metrics are introduced to provide both quantitative and perceptual assessments of the model’s performance, encompassing spatial fidelity, structural consistency, and spectral accuracy.
 \section{Problem Formulation}
 
 The task of SAR-to-optical translation can be formulated as a supervised image-to-image regression problem. Let
 \[
-X \in \mathbb{R}^{H \times W \times 2}
+    X \in \mathbb{R}^{H \times W \times 2}
 \]
 denote the input SAR patch, where the two channels correspond to Sentinel-1 backscatter in VV and VH polarizations (expressed in the decibel scale(dB)). The corresponding reference optical patch is represented as
 \[
-Y \in \mathbb{R}^{H \times W \times N},
+    Y \in \mathbb{R}^{H \times W \times N},
 \]
 where \(N\) denotes the number of channels corresponding to the multispectral bands of {Sentinel-2}.
 
 The objective is to learn a parametric mapping function
 \[
-f_\theta : \mathbb{R}^{H \times W \times 2} \; \rightarrow \; \mathbb{R}^{H \times W \times N},
+    f_\theta : \mathbb{R}^{H \times W \times 2} \; \rightarrow \; \mathbb{R}^{H \times W \times N},
 \]
 such that the generated multispectral image
 \[
-\hat{Y} = f_\theta(X)
+    \hat{Y} = f_\theta(X)
 \]
 is as close as possible to the reference image \( Y \).
 
 Training this model requires minimizing a loss function \(\mathcal{L}\) that measures the discrepancy between \(\hat{Y}\) and \(Y\):
 \[
-\hat{\theta} = \arg\min_\theta \; \mathcal{L}(f_\theta(X), Y).
+    \hat{\theta} = \arg\min_\theta \; \mathcal{L}(f_\theta(X), Y).
 \]
 
 In practice, \(\mathcal{L}\) is designed as a weighted combination of complementary terms (e.g., reconstruction, adversarial, perceptual, and spectral losses) that collectively encourage pixel-level accuracy, structural consistency, and spectral fidelity.
@@ -35,7 +36,20 @@ This thesis relies exclusively on the SEN12MS dataset~\cite{sen12ms_2019}, curat
 
 The Sentinel-1 component originates from ground-range-detected (GRD) products acquired in interferometric wide swath (IW) mode. These data were radiometrically calibrated and orthorectified against SRTM or ASTER digital elevation models to ensure accurate geolocation. The Sentinel-2 imagery was curated using a cloud-free mosaicking workflow on Google Earth Engine: within each region of interest (ROI), multiple observations collected during a given meteorological season of 2017 were composited such that cloud-contaminated pixels were systematically excluded. This procedure ensured that every ROI is represented by seasonally consistent, nearly cloud-free multispectral data. Finally, the MODIS land cover maps were used to generate categorical reference layers; however, due to their relatively coarse native resolution (500 m), they are subject to spatial inaccuracies even after upsampling.
 
-\begin{figure}[htbp]
+Importantly, all triplets underwent manual verification by a remote sensing expert. This revision step ensured that each patch is free from major artifacts, severe registration errors, or residual cloud contamination, thereby guaranteeing the dataset’s quality and usability for machine learning tasks.
+
+The ROIs were sampled globally across all inhabited continents and four meteorological seasons of 2017 to maximize spatial and temporal diversity, as illustrated in Figure~\ref{fig:sen_12_ms_dist}. Nevertheless, it should be noted that the ROI selection was not purely random. In practice, locations were chosen to avoid large homogeneous areas such as deserts or oceans and to ensure inclusion of diverse land cover classes. While this design improves the dataset’s representativeness for a wide range of applications, it may introduce a bias toward heterogeneous landscapes and thus does not fully capture the true global distribution of land cover types.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.95\textwidth]{img/sen_12_ms_distribution.png}
+  \caption[ROIs distribution of the SEN12-MS Dataet]{ROIs distribution of the SEN12-MS Dataet. Adapted from \cite{sen12ms_2019}}
+  \label{fig:sen_12_ms_dist}
+\end{figure}
+
+For the purpose of this thesis, which addresses translation from SAR to multispectral optical imagery, only the Sentinel-1 and Sentinel-2 modalities are employed. Representative sample pairs are illustrated in Figure~\ref{fig:sen12ms_pairs}. The MODIS land cover products included in SEN12MS are disregarded, as they are not directly relevant to the translation task.
+
+\begin{figure}[h!]
     \centering
     % First row: SAR images
     \begin{subfigure}{0.18\textwidth}
@@ -99,11 +113,6 @@ The Sentinel-1 component originates from ground-range-detected (GRD) products ac
 \end{figure}
 
 
-Importantly, all triplets underwent manual verification by a remote sensing expert. This revision step ensured that each patch is free from major artifacts, severe registration errors, or residual cloud contamination, thereby guaranteeing the dataset’s quality and usability for machine learning tasks.
-
-The ROIs were sampled globally across all inhabited continents and four meteorological seasons of 2017 to maximize spatial and temporal diversity. Nevertheless, it should be noted that the ROI selection was not purely random. In practice, locations were chosen to avoid large homogeneous areas such as deserts or oceans and to ensure inclusion of diverse land cover classes. While this design improves the dataset’s representativeness for a wide range of applications, it may introduce a bias toward heterogeneous landscapes and thus does not fully capture the true global distribution of land cover types.
-
-For the purpose of this thesis, which addresses translation from SAR to multispectral optical imagery, only the Sentinel-1 and Sentinel-2 modalities are employed. The MODIS land cover products included in SEN12MS are disregarded, as they are not directly relevant to the translation task.
 
 \subsection{SEN12 datasets Family}
 SEN12MS is part of a broader line of datasets developed to foster multimodal remote sensing research. Its direct predecessor, SEN1-2~\cite{sen12_2018}, curated by the same research group, contained approximately 282,000 paired patches of Sentinel-1 VV data and Sentinel-2 RGB composites. While groundbreaking in bridging SAR and optical domains, SEN1-2 lacked georeferencing, full spectral coverage, and multi-polarization SAR, limiting its applicability for remote sensing research beyond proof-of-concept image translation.

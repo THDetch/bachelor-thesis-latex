@@ -97,7 +97,7 @@ Similar findings were also reported by~\cite{s2o_ViT_cGAN} and~\cite{CR_RS_GAN_s
  
 Overall, the results demonstrate the incremental benefit of incorporating perceptual and structural similarity terms alongside the adversarial $\mathcal{L}_{\text{GAN}}$ and $\mathrm{L1}$ objectives. 
 
-\subsection{Effect of Excluding 60 m Bands}
+\section{Effect of Excluding 60 m Bands}
 Given the varying data distributions and the originally different spatial resolutions of the Sentinel-2 bands (even though all were resampled to 10m in the dataset), it was hypothesized that including the 60m bands might introduce noise and confuse the model during training. To examine this assumption, an ablation study was conducted using the same training configuration as for the full 13-band model, both trained on 20\% of the winter subset.
 
 Surprisingly, removing the 60m bands did not lead to any improvement. Instead, both SSIM and LPIPS scores decreased, as reported in Table~\ref{tab:ablation_excluding_60m}. This suggests that the 60m bands, which primarily serve for atmospheric correction (e.g., B1, B9, and B10), provide complementary spectral information that contributes to maintaining spectral fidelity during training.
@@ -106,7 +106,7 @@ Surprisingly, removing the 60m bands did not lead to any improvement. Instead, b
     \centering
     \setlength{\tabcolsep}{8pt}
     \renewcommand{\arraystretch}{1.15}
-    \caption[[Overall performance when excluding 60m bands]]{Overall performance comparing all 13 bands vs. excluding the 60m bands (B1, B9, B10).}
+    \caption[Overall performance when excluding 60m bands]{Overall performance comparing all 13 bands vs. excluding the 60m bands (B1, B9, B10).}
     \label{tab:ablation_excluding_60m}
     \begin{tabular}{lccc}
         \hline

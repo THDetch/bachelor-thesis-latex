@@ -27,7 +27,25 @@
 \usepackage{pifont}
 \usepackage{amssymb} 
 \usepackage{pgfplots}
+\usepackage{listings}
+
+
 \pgfplotsset{compat=1.18}
+
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{orange},
+    commentstyle=\color{gray},
+    frame=single,
+    breaklines=true,
+    columns=flexible,
+    backgroundcolor=\color{gray!5},
+    captionpos=b
+}
+
 
 
 \onehalfspacing  
@@ -97,6 +115,7 @@
 \input{chapters/methodology.tex}
 \input{chapters/results.tex}
 \input{chapters/ablations.tex}
+\input{chapters/limitations.tex}
 % \input{chapters/discussion.tex}
 % \input{chapters/conclusion.tex}
 
@@ -104,6 +123,7 @@
 
 % \bibliographystyle{IEEEtran}
 % \bibliography{references}
+\clearpage
 \appendix
 \input{chapters/appendix.tex}
 
