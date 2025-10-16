@@ -72,3 +72,74 @@ This limitation suggests that future research should focus on exploring alternat
 Another important limitation lies in the model’s temporal generalizability. The Pix2Pix model was trained and evaluated primarily on the winter subset of the SEN12-MS dataset, which ensures a consistent data distribution and spectral domain during training. While the model exhibits reasonable spatial generalization when evaluated on the SEN12-MS-CR dataset—which features a distinct set of regions of interest (ROIs) compared to SEN12-MS—it struggles to maintain the same level of performance across different seasonal subsets. In particular, when applied to the summer, fall, or spring subsets, the model demonstrates a noticeable degradation in reconstruction quality, indicating sensitivity to seasonal variability in vegetation, soil moisture, and illumination conditions. Quantitative and qualitative results for the different seasons are provided in Appendix~\ref{appendix:results_seasons}.
 
 These findings indicate that while the model performs reliably under spatial conditions similar to its training distribution, it fails to maintain consistent performance across acquisition periods with differing environmental characteristics. Future research should therefore focus on enhancing both spatial and temporal robustness. Potential strategies include domain adaptation techniques, fine-tuning with representative samples from multiple seasons and regions, and data augmentation methods that simulate seasonal and spatial variability.
+
+
+\section{Aware per-Band Clipping}
+
+As described in Section~\ref{subsec:preprocessing}, the optical data values were clipped to the range [0, 10,000], regardless of the spectral band. This clipping strategy is consistently adopted across the literature and has therefore been followed in this thesis. However, despite the uniform clipping, the actual value distributions differ significantly among the bands, as revealed by a statistical analysis performed on the winter subset.
+
+From each ROI in the winter subset (47 ROIs), one optical \texttt{.tif} file was analyzed to examine the pixel value distributions across the 13 Sentinel-2 bands. The resulting histograms (Figure~\ref{fig:data_ranges}) show that the dynamic range and distribution shape vary considerably between bands. A particularly distinct observation is seen in the Cirrus band (B10, indexed as 11 in the figure), where the pixel values are compressed into a very limited, discrete set of intensity levels, unlike the continuous distributions of other bands.
+
+
+\begin{figure}[h!]
+    \centering
+    % -------- First row --------
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/data_ranges/sample_1.png}
+        \label{fig:sub1}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/data_ranges/sample_2.png}
+        \label{fig:sub2}
+    \end{subfigure}
+
+    % -------- Second row --------
+    \vspace{0.5em}
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/data_ranges/sample_3.png}
+        \label{fig:sub3}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{img/data_ranges/sample_4.png}
+        \label{fig:sub4}
+    \end{subfigure}
+
+    \caption{Value ranges across the individual optical bands. Band numbers correspond to their indices, e.g., B9 in the figure represents B8A and B10 represents B9, etc.}
+
+    \label{fig:data_ranges}
+\end{figure}
+
+The statistics are moreover numerically reported in Table~\ref{tab:s2_band_stats}. This uniform clipping of all optical bands to a fixed range such as [0, 10000] disregards the intrinsic spectral variability between bands. Low-range bands become underrepresented, and high-range bands risk saturation, leading to an imbalanced input distribution. This can hinder convergence and degrade the realism of generated optical images. Band-specific normalization based on empirical percentiles provides a more balanced and physically consistent preprocessing strategy. Although these statistics were computed from only 47 optical samples, the analysis provides valuable insights that can inform and guide future research.
+
+\begin{table}[H]
+\centering
+\caption{Summary statistics of the Sentinel-2 optical bands across the winter subset. Reported are the global minimum and maximum values, and the 1\textsuperscript{st}, 50\textsuperscript{th} (median), and 99\textsuperscript{th} percentiles.}
+\label{tab:s2_band_stats}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Band} & \textbf{Global Min} & \textbf{Global Max} & \textbf{p1} & \textbf{p50} & \textbf{p99} \\
+\midrule
+B1  (Coastal Aerosol)  & 940  & 3712 & 965  & 1387 & 2034 \\
+B2  (Blue)             & 634  & 5759 & 725  & 1101 & 1998 \\
+B3  (Green)            & 395  & 6001 & 498  & 960  & 2423 \\
+B4  (Red)              & 223  & 6748 & 331  & 893  & 3543 \\
+B5  (Red Edge)       & 204  & 6377 & 291  & 1119 & 3758 \\
+B6  (Red Edge)       & 139  & 6532 & 253  & 1643 & 4042 \\
+B7  (Red Edge)       & 117  & 6875 & 239  & 1834 & 4389 \\
+B8  (NIR)              & 185  & 7048 & 202  & 1805 & 4211 \\
+B8A (Narrow NIR)       & 108  & 7130 & 199  & 1995 & 4542 \\
+B9  (Water Vapour)     & 43   & 3329 & 85   & 720  & 2214 \\
+B10 (Cirrus)           & 3    & 303  & 7    & 16   & 192  \\
+B11 (SWIR)           & 34   & 6173 & 75   & 1802 & 5777 \\
+B12 (SWIR)           & 1    & 5252 & 46   & 1180 & 4825 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textcolor{red}{consider reporting on mean and standard deviation}

@@ -112,8 +112,8 @@ Surprisingly, removing the 60m bands did not lead to any improvement. Instead, b
         \hline
         \textbf{Setting} & \textbf{SSIM $\uparrow$} & \textbf{PSNR (dB) $\uparrow$} & \textbf{SAM~(°) $\downarrow$} \\
         \hline
-        All 13 bands & 0.859390 & 27.650251 & 6.7064 \\
-        Excluding 60m (B1,B9,B10) & 0.825861 & 26.474423 & 6.3339 \\
+        All 13 bands & \textbf{0.859390} & \textbf{27.650251} & 6.7064 \\
+        Excluding 60m (B1, B9, B10) & 0.825861 & 26.474423 & \textbf{6.3339} \\
         \hline
     \end{tabular}
     % Note: SAM is computed in 13-band space for "All 13 bands" and in 10-band space when excluding 60 m bands.
@@ -129,6 +129,7 @@ Similarly, the per-band evaluation (Table~\ref{tab:ablation_excluding_60m_per_ba
 
     \begin{tabular}{cccc}
         % ------------------- Rows -------------------
+        (a) & (b) & (c) & (d) \\
         \includegraphics[width=0.2\textwidth, height=0.2\textheight, keepaspectratio]{img/exclusion_60_m/bands10/sample_000034_sar_pseudo.png} &
         \includegraphics[width=0.2\textwidth, height=0.2\textheight, keepaspectratio]{img/exclusion_60_m/bands10/sample_000034_pred_rgb.png} &
         \includegraphics[width=0.2\textwidth, height=0.2\textheight, keepaspectratio]{img/exclusion_60_m/bands13/sample_000034_pred_rgb.png} &
@@ -152,11 +153,10 @@ Similarly, the per-band evaluation (Table~\ref{tab:ablation_excluding_60m_per_ba
 
     \caption[Qualitative results when excluding 60\,m bands]{%
     Qualitative comparison of generated optical images when excluding the 60\,m Sentinel-2 bands. 
-    Columns: \textbf{(i)}~SAR input (pseudo-RGB), 
-    \textbf{(ii)}~generated optical image trained without the 60\,m bands, 
-    \textbf{(iii)}~generated optical image trained with all 13 bands, and 
-    \textbf{(iv)}~reference cloud-free Sentinel-2 image. 
-    All optical outputs are visualized in RGB composition (B4, B3, B2).}
+    Columns: \textbf{(a)}~SAR input (pseudo-RGB), 
+    \textbf{(b)}~generated optical image trained without the 60\,m bands, 
+    \textbf{(c)}~generated optical image trained with all 13 bands, and 
+    \textbf{(d)}~reference cloud-free Sentinel-2 image.}
     \label{fig:ablation_excluding_60m_qualitative}
 \end{figure}
 
@@ -164,26 +164,43 @@ Similarly, the per-band evaluation (Table~\ref{tab:ablation_excluding_60m_per_ba
     \centering
     \setlength{\tabcolsep}{6pt}
     \renewcommand{\arraystretch}{1.15}
-    \caption[Per-band performance when excluding 60m bands]{Per-band comparison of SSIM and PSNR. Columns are ordered as SSIM (no 60\,m), SSIM (13), PSNR (no 60\,m), and PSNR (13). A dash indicates the band was excluded in the 60\,m-removed setting.}
+    \caption[Per-band performance when excluding 60m bands]{Per-band performance when excluding 60m bands.}
     \label{tab:ablation_excluding_60m_per_band}
     \begin{tabular}{lcccc}
-        \hline
-        Band & SSIM (no 60\,m) $\uparrow$ & SSIM (13) $\uparrow$ & PSNR (no 60\,m) [dB] $\uparrow$ & PSNR (13) [dB] $\uparrow$ \\
-        \hline
-        B1   & ---    & 0.9634 & ---    & 29.749 \\
-        B2   & 0.9431 & 0.9430 & 34.151 & 34.057 \\
-        B3   & 0.9064 & 0.9060 & 31.691 & 31.718 \\
-        B4   & 0.8348 & 0.8340 & 28.039 & 28.145 \\
-        B5   & 0.8707 & 0.8729 & 28.098 & 28.257 \\
-        B6   & 0.8199 & 0.8231 & 26.740 & 26.926 \\
-        B7   & 0.7890 & 0.7925 & 25.694 & 25.884 \\
-        B8   & 0.7375 & 0.7416 & 25.534 & 25.739 \\
-        B8A  & 0.7687 & 0.7722 & 25.095 & 25.311 \\
-        B9   & ---    & 0.8666 & ---    & 24.617 \\
-        B10  & ---    & 0.8826 & ---    & 24.571 \\
-        B11  & 0.7774 & 0.7809 & 23.395 & 23.727 \\
-        B12  & 0.8034 & 0.8073 & 24.956 & 25.263 \\
-        \hline
+    \hline
+    \textbf{Band} & \textbf{SSIM (no 60\,m)} $\uparrow$ & \textbf{SSIM (13)} $\uparrow$ & \textbf{PSNR (no 60\,m) [dB]} $\uparrow$ & \textbf{PSNR (13) [dB]} $\uparrow$ \\
+    \hline
+    B1   & ---    & 0.9634 & ---    & 29.749 \\
+    B2   & 0.9431 & 0.9430 & 34.151 & 34.057 \\
+    B3   & 0.9064 & 0.9060 & 31.691 & 31.718 \\
+    B4   & 0.8348 & 0.8340 & 28.039 & 28.145 \\
+    B5   & 0.8707 & 0.8729 & 28.098 & 28.257 \\
+    B6   & 0.8199 & 0.8231 & 26.740 & 26.926 \\
+    B7   & 0.7890 & 0.7925 & 25.694 & 25.884 \\
+    B8   & 0.7375 & 0.7416 & 25.534 & 25.739 \\
+    B8A  & 0.7687 & 0.7722 & 25.095 & 25.311 \\
+    B9   & ---    & 0.8666 & ---    & 24.617 \\
+    B10  & ---    & 0.8826 & ---    & 24.571 \\
+    B11  & 0.7774 & 0.7809 & 23.395 & 23.727 \\
+    B12  & 0.8034 & 0.8073 & 24.956 & 25.263 \\
+    \hline
     \end{tabular}
 \end{table}
 
+
+% \begin{table}[h!]
+% \centering
+% \caption[Quantitative results across data scales and seasonal subsets]{%
+% Quantitative performance of the \textit{pix2pix} model across different training data scales and seasonal subsets of the SEN12-MS dataset. Arrows ($\uparrow$ / $\downarrow$) indicate whether higher or lower values denote better performance, respectively.}
+% \begin{tabular}{lcccc}
+% \toprule
+% \textbf{Dataset} & \textbf{SSIM $\uparrow$} & \textbf{PSNR (dB) $\uparrow$} & \textbf{LPIPS $\downarrow$} & \textbf{SAM (°) $\downarrow$} \\
+% \midrule
+% Winter & \textbf{0.888} & \textbf{32.63} & \textbf{0.173} & \textbf{4.41} \\
+% Spring & 0.791 & 20.00 & 0.297 & 12.06  \\
+% Summer & 0.800 & 22.79 & 0.268 & 12.43  \\
+% Fall & 0.788 & 22.40 & 0.269 & 13.67  \\
+% \bottomrule
+% \end{tabular}
+% \label{tab:quantitative_results_all}
+% \end{table}

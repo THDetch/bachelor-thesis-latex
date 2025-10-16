@@ -197,7 +197,10 @@ After clipping, all values were linearly normalized to the \textit{tanh} range \
 
 \section{Models}
 \subsection{Pix2Pix Model}
-The image translation task in this thesis is addressed using the \textit{pix2pix} model, introduced by Isola et al.~\cite{pix2pix_2018}. Pix2pix is based on the concept of conditional generative adversarial networks (cGANs), which extend the original GAN formulation by conditioning both the generator and discriminator on an input image. In this setup, the generator $G$ learns to map an input image $x$ to an output image $y$, while the discriminator $D$ learns to distinguish between real image pairs $\{x, y\}$ and synthesized pairs $\{x, G(x)\}$. This adversarial objective enforces that generated outputs are not only realistic but also structurally consistent with the given input.
+The image translation task in this thesis is addressed using the \textit{Pix2Pix} model, introduced by Isola et al.~\cite{pix2pix_2018}. The Pix2Pix framework has gained widespread popularity in the field of SAR-to-optical image translation and is commonly employed as a baseline in nearly all studies addressing this problem. Owing to its proven effectiveness and extensive use in related work, it was selected as the primary model for the experiments conducted in this thesis.
+
+Pix2Pix is based on the concept of conditional generative adversarial networks (cGANs), which extend the original GAN formulation by conditioning both the generator and discriminator on an input image. In this setup, the generator $G$ learns to map an input image $x$ to an output image $y$, while the discriminator $D$ learns to distinguish between real image pairs $\{x, y\}$ and synthesized pairs $\{x, G(x)\}$. This adversarial objective encourages the generated outputs to be both realistic and structurally consistent with the given input.
+
 
 Formally, the cGAN loss is defined as:
 \begin{equation}
@@ -211,22 +214,19 @@ The final objective is then:
 \begin{equation}
     G^* = \arg \min_G \max_D \; \mathcal{L}_{cGAN}(G,D) + \lambda \mathcal{L}_{\ell_1}(G),
 \end{equation}
-where $\lambda$ balances realism and reconstruction accuracy. Following Isola et al., $\lambda = 100$ is typically used.
+where $\lambda$ balances realism and reconstruction accuracy. Following Isola et al., $\lambda = 100$ is typically used. In addition, supplementary loss components were incorporated, as they demonstrated improved training convergence and led to higher-quality reconstructions (see the ablation study on loss functions in Section~\ref{subsec:ablation_loss}).
 
-\paragraph{Generator architecture.}  
-The generator is implemented as a \textit{U-Net} encoder–decoder~\cite{U-net_2015}. Unlike a plain encoder–decoder, U-Net introduces skip connections between corresponding downsampling and upsampling layers, allowing low-level spatial details from the input to directly propagate to the output. This design is particularly effective in tasks where the input and output share spatial structures, as in SAR-to-optical translation.
+The generator is implemented as a U-Net encoder–decoder~\cite{U-net_2015}. Unlike a plain encoder–decoder, U-Net introduces skip connections between corresponding downsampling and upsampling layers, allowing low-level spatial details from the input to directly propagate to the output. This design is particularly effective in tasks where the input and output share spatial structures, such as SAR-to-optical translation.
 
-\paragraph{Discriminator architecture.}  
-The discriminator follows a \textit{PatchGAN} design, which classifies local $N \times N$ patches of an image as real or fake instead of operating on the entire image~\cite{pix2pix_2018}. This approach emphasizes high-frequency correctness and enforces local realism, while the $\ell_1$ loss ensures global structural coherence. The original work demonstrates that a patch size of $70 \times 70$ provides a good trade-off between quality and efficiency.
+The discriminator follows a PatchGAN architecture, which classifies local $N \times N$ image patches as real or fake instead of operating on the entire image~\cite{pix2pix_2018}. This approach emphasizes high-frequency accuracy and enforces local realism, while the $\ell_1$ term ensures global structural coherence. The original work demonstrated that a patch size of $70 \times 70$ provides a good trade-off between reconstruction quality and computational efficiency.
 
-\paragraph{Optimization.}  
-Training alternates between updating $D$ to improve its ability to classify real versus fake pairs, and updating $G$ to fool $D$ while minimizing the $\ell_1$ distance to the target. The Adam optimizer~\cite{adam_optimizer_2017} with learning rate $2 \times 10^{-4}$ and momentum parameters $\beta_1=0.5$, $\beta_2=0.999$ is typically employed. Dropout is used at both training and inference time to introduce stochasticity, though in practice outputs remain largely deterministic.
+During training, updates alternate between optimizing $D$ to improve its ability to classify real and generated pairs, and optimizing $G$ to both deceive $D$ and minimize the $\ell_1$ distance to the target image. The Adam optimizer~\cite{adam_optimizer_2017} is used with a learning rate of $1 \times 10^{-4}$ and momentum parameters $\beta_1 = 0.5$ and $\beta_2 = 0.999$. Dropout is applied during both training and inference to introduce stochasticity, although the generated outputs remain largely deterministic in practice.
 
-\paragraph{Relevance to this work.}  
-The pix2pix framework provides a principled and general-purpose solution for image-to-image translation tasks. In the context of this thesis, it is employed to learn mappings from Sentinel-1 SAR inputs to Sentinel-2 multispectral optical outputs. The combination of adversarial and reconstruction losses, together with the U-Net generator and PatchGAN discriminator, makes pix2pix particularly suitable for producing sharp, realistic, and structurally aligned multispectral predictions.
+Overall, the Pix2Pix framework provides a principled and general-purpose solution for image-to-image translation tasks. Its ability to combine adversarial and reconstruction-based objectives makes it particularly suitable for SAR-to-optical translation, where both structural accuracy and perceptual quality are essential.
+
 
 \section{Training Procedure}
-The model training follows a standard adversarial optimization scheme combining generator and discriminator updates with additional perceptual constraints
+This section describes the complete training pipeline adopted for the proposed SAR-to-optical image translation model. It outlines the experimental setup, loss formulations, optimization strategy, and monitoring procedures that together ensure stable adversarial training and effective convergence. Emphasis is placed on the integration of multiple complementary loss functions to enhance perceptual and structural fidelity, as well as on the staged optimization scheme designed to mitigate common GAN instabilities. The overall workflow aims to achieve a robust balance between pixel-level accuracy, perceptual realism, and generalization performance across diverse imaging conditions.
 
 \subsection{Experimental Setup} All experiments were implemented in Python~3.11, PyTorch 2.4.0, and CUDA 12.4, using the official \texttt{Pix2Pix} implementation\footnote{\url{https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix}}. Training was conducted on an NVIDIA RTX~A5000 GPU with CUDA acceleration. The training, validation, and test sets were derived from the preprocessed SEN12-MS subset described in Section~\ref{subsec:preprocessing}. Each sample consisted of a Sentinel-1 SAR input patch (VV and VH channels) paired with the corresponding Sentinel-2 optical patch comprising 13 spectral bands.
 
@@ -247,7 +247,7 @@ The overall objective function can be expressed as
 
 where:
 \begin{itemize}
-    \item $\mathcal{L}_{\text{GAN}}$ denotes the adversarial loss, encouraging the generator to produce outputs indistinguishable from real images.
+    \item $\mathcal{L}_{\text{GAN}}$ denotes the adversarial loss (LSGAN), encouraging the generator to produce outputs indistinguishable from real images. 
     \item $\mathcal{L}_{\text{L1}}$ represents the pixel-wise reconstruction loss (Mean Absolute Error), enforcing global structural similarity between the generated and target images.
     \item $\mathcal{L}_{\text{SSIM}}$ is the Structural Similarity Index Measure loss, promoting local structural consistency.
     \item $\mathcal{L}_{\text{LPIPS}}$ denotes the Learned Perceptual Image Patch Similarity loss, which captures high-level perceptual differences.
@@ -281,32 +281,11 @@ Model performance was monitored using both quantitative validation metrics and q
 
 All relevant training statistics, including generator and discriminator losses, learning rates, and validation metrics, were logged for subsequent analysis. Checkpoints were saved at the end of each epoch to enable resumption in case of interruptions. After training completion, the recorded metrics were used to generate loss and performance curves, which facilitated evaluation of convergence stability and model generalization.
 
-% \subsection{Training pipeline}
-
-% \begin{algorithm}[H]
-% \caption{Computation of Sentinel-2 Value Ranges}
-% \begin{algorithmic}[1]
-% \State \textbf{Input:} SEN12MS dataset (winter subset)
-% \State \textbf{Output:} Minimum and maximum values per band for representative tiles
-% \State
-% \State Select the \texttt{winter} subset from SEN12MS
-% \For{each Region of Interest (ROI) in the winter subset}
-%     \State Randomly select one tile from the ROI
-%     \State Load the corresponding Sentinel-2 image
-%     \For{each spectral band $b$ in the image}
-%         \State Compute $\min(b)$ and $\max(b)$ over all pixels
-%     \EndFor
-% \EndFor
-% \State Report the per-band minimum and maximum values for each selected tile
-% \end{algorithmic}
-% \end{algorithm}
 
 \section{Evaluation Metrics}
 The effectiveness of SAR-to-optical image translation depends not only on the choice of translation models but also on the methods employed for quality assessment. Image Quality Assessment (IQA) serves two key purposes: (i) to objectively evaluate the quality of results produced by different models, and (ii) to guide the optimization of network architectures and algorithms~\cite{quality_assessment_S2OT}.
 
-In~\cite{quality_assessment_S2OT}, five IQA metrics—SSIM, FSIM, MSE, LPIPS, and DISTS—were compared through image restoration experiments to identify suitable measures for SAR-to-optical translation. Their results showed that SSIM, MSE, and LPIPS consistently aligned with human perception, converged reliably, and effectively captured both structural and textural details, whereas FSIM often failed to capture fine details and DISTS exhibited instability. Consequently, SSIM, MSE, and LPIPS were recommended as complementary metrics for pixel-level fidelity, structural similarity, and perceptual quality. Nevertheless, as summarized in Table~\ref{tab:iqa}, SSIM, PSNR, and SAM remain the most widely used indicators in SAR-to-optical translation, fusion, and cloud removal tasks, while LPIPS and MSE appear far less frequently. This distribution is consistent with the findings reported in the literature survey~\cite{sar_2_opt_CGAN_survey_taxonomy}.
-
-% \textcolor{red}{TODO: specify which metrics will be used and why}
+In~\cite{quality_assessment_S2OT}, five image quality assessment (IQA) metrics—SSIM, FSIM, MSE, LPIPS, and DISTS—were systematically evaluated through image restoration experiments to determine their suitability for SAR-to-optical translation tasks. The study found that SSIM, MSE, and LPIPS exhibited strong consistency with human visual perception, demonstrated stable convergence, and effectively captured both structural and textural characteristics. In contrast, FSIM often failed to represent fine details accurately, while DISTS showed instability. Consequently, the authors recommended SSIM, MSE, and LPIPS as complementary metrics for assessing pixel-level accuracy, structural similarity, and perceptual quality, respectively. However, based on the analysis conducted in this thesis across 16 related studies, SSIM, PSNR, and SAM remain the most widely adopted evaluation metrics in SAR-to-optical translation, fusion, and cloud removal research, whereas LPIPS and MSE appear less frequently, as summarized in Table~\ref{tab:iqa}. This trend aligns with the observations reported in the literature survey by~\cite{sar_2_opt_CGAN_survey_taxonomy}.
 
 \begin{table}[h!]
 \centering
