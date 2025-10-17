@@ -1,4 +1,39 @@
 \chapter{Introduction}
 
+Earth observation has become an indispensable tool for understanding and monitoring the planet’s dynamic processes. Optical and radar remote sensing represent two complementary modalities at the core of modern Earth observation systems. optical sensors provide rich spectral and visual information suitable for human interpretation. This information is used, among others, in forest prediction, agricultural monitoring, military, etc~\cite{S2MS_GAN}. However, they are inherently constrained by atmospheric conditions such illumination variability and in particular cloud cover. This causes considerable data gaps in both the spatial and temporal domains~\cite{CR_SEN2_dRNN}. 
+In contrast, synthetic aperture radar (SAR) sensors operate in the microwave domain, offering all-weather, day-and-night imaging capabilities independent of sunlight or cloud interference. However, the backscatter-based nature of SAR imagery introduces challenges related to speckle noise, geometric distortions, and the absence of spectral color information~\cite{bench_sar_color, naderi2021}, complicating its interpretation.
 
+To bridge the gap between these two sensing modalities, SAR-to-optical image translation has emerged as a powerful generative approach. It aims to synthesize optical-like, cloud-free imagery from SAR data, combining the interpretability of optical observations with the robustness of radar acquisitions. Recent advances in generative artificial intelligence (GenAI), particularly in conditional generative adversarial networks (cGANs) and diffusion models, have made it possible to learn complex mappings between SAR and optical domains with remarkable realism~\cite{cr_fuse_HR_GEN}. 
+These developments have opened new pathways for applications in land-cover classification, vegetation monitoring, disaster response, and particularly, cloud removal. % keep or delete?
 
+Despite the rapid progress in this field, the majority of the existing studies have primarily focused on reconstructing the visible RGB subset of optical imagery, with some extending with NIR, leaving the full multispectral potential of missions such as Sentinel-2 largely not fully exploered. Moreover, while SAR-to-optical translation is often qualitatively evaluated, a systematic assessment of its reliability across individual spectral bands remains limited. Finally, although the approach has demonstrated potential for cloud removal, its effectiveness in this context has yet to be thoroughly validated across the full spectrum.
+
+Against this background, the present thesis investigates the use of generative models for translating Sentinel-1 SAR imagery into multispectral Sentinel-2 optical data. The work is guided by three main objectives:
+\begin{enumerate}
+    \item To validate SAR-to-optical image translation across the full 13 Sentinel-2 spectral bands. 
+    \item To assess how reliably each optical band can be individually reconstructed and to what extent.
+    \item To evaluate the performance of SAR-to-optical image translation for cloud removal
+\end{enumerate}
+
+Through these objectives, this thesis aims to provide a comprehensive and quantitative understanding of SAR-to-optical translation as a multimodal learning problem, highlighting its strengths, limitations, and potential for operational cloud-free optical data generation.
+
+\bigskip
+\textcolor{red}{layout the thesis}
+% \noindent
+% \textbf{Thesis Structure.}
+The remainder of this thesis is organized into six chapters, each addressing a distinct component of the research.
+Chapter~\ref{ch:background} provides the theoretical background and literature review, introducing the fundamentals of remote sensing, the Copernicus Sentinel missions, cloud removal methodologies, and generative artificial intelligence for multimodal data fusion.
+Chapter~\ref{ch:methodology} outlines the methodological framework, including the problem formulation, dataset selection, preprocessing pipeline, and the design of the \textit{Pix2Pix} model together with its training and evaluation procedures.
+Chapter~\ref{ch:results} presents the experimental results and analyses, covering the main evaluation scenarios: reconstruction on partial and full datasets, per-band performance assessment, and validation on cloud removal tasks.
+Chapter~\ref{ch:ablation} reports the ablation studies that examine the effect of different loss functions and the exclusion of specific spectral bands, providing a deeper understanding of the model’s behavior.
+Chapter~\ref{ch:challenges} discusses the main challenges encountered during experimentation, such as training instability and artifact formation, along with the corrective strategies implemented.
+Finally, Chapter~\ref{ch:limitations} concludes the work by summarizing its limitations and outlining future research directions, including temporally generalized learning, diffusion-based architectures, and band-aware normalization strategies.
+Supplementary material, such as per-band reconstructions and seasonal evaluations, is included in the appendices.
+
+The remainder of this thesis is organized as follows.
+Chapter~\ref{ch:background} introduces the theoretical background, including remote sensing fundamentals, the Sentinel missions, cloud removal methods, and generative AI approaches.
+Chapter~\ref{ch:methodology} describes the methodological framework, dataset preparation, and the adopted Pix2Pix model.
+Chapter~\ref{ch:results} presents the experimental results and evaluation across multispectral reconstruction and cloud removal tasks.
+Chapter~\ref{ch:ablation} reports the ablation studies investigating the effect of different loss configurations and band exclusions.
+Chapter~\ref{ch:challenges} discusses the challenges encountered during model training and their mitigation.
+Finally, Chapter~\ref{ch:limitations} summarizes the limitations, draws conclusions, and outlines directions for future research.

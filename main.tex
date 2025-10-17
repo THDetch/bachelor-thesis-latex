@@ -98,11 +98,12 @@
 
 
 \tableofcontents
-\listoffigures
-\listoftables
-
 \include{abbreviations}
+\listoftables
+\listoffigures
+
 % \chapter*{Abstract}
+\input{chapters/abstract.tex}
 \addcontentsline{toc}{chapter}{Abstract}
 % \cleardoublepage
 
@@ -110,7 +111,7 @@
 \pagenumbering{arabic}
 
 
-% \input{chapters/introduction.tex}
+\input{chapters/introduction.tex}
 \input{chapters/background.tex}
 % \input{chapters/related-work.tex}
 \input{chapters/methodology.tex}
@@ -118,7 +119,7 @@
 \input{chapters/ablations.tex}
 \input{chapters/limitations.tex}
 % \input{chapters/discussion.tex}
-% \input{chapters/conclusion.tex}
+\input{chapters/conclusion.tex}
 
 
 

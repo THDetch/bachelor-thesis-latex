@@ -84,7 +84,7 @@ The model required approximately 25$\sim$hours to complete 150~epochs of trainin
 \end{table} 
 Similarly, the image reconstruction quality improves noticeably with a larger training dataset. Qualitative examples are shown in Figure~\ref{fig:qualitative_results_100_20}. The model trained on the full winter subset not only better preserves the structural details of the reference images but also achieves markedly enhanced color fidelity, as evident in column (a). In the urban scene (b), it accurately reconstructs the city layout and successfully delineates the river traversing the area. Furthermore, compared to the model trained on only 20\% of the data, the full-data model better captures surface relief and elevation depth, as illustrated in (c).
 
-These qualitative and quantitative improvements demonstrate that increasing the amount and diversity of training data enables the model to more effectively learn both the perceptual and spectral characteristics of the optical domain, ultimately guiding it toward more realistic and color-consistent reconstructions.
+These qualitative and quantitative improvements demonstrate the capability of the Pix2Pix model to reconstruct optical imagery solely from SAR data. Furthermore, expanding the volume and diversity of the training dataset enables the model to more effectively learn the perceptual and spectral characteristics of the optical domain, thereby producing reconstructions that are both more realistic and color-consistent.
 
 \begin{figure}[h!]
     \centering
@@ -129,7 +129,6 @@ These qualitative and quantitative improvements demonstrate that increasing the 
 \section{Results Across Individual Optical Bands}
 Another objective of this work was to assess the model’s ability to reliably reconstruct each optical band individually and to evaluate the extent of its accuracy across the spectrum. 
 For this purpose, the model trained on the full winter subset was evaluated separately for all Sentinel-2 bands, and the corresponding results are summarized in Table~\ref{tab:per_band_validation}.
-
 When comparing the reconstruction quality across individual bands, the focus is placed on the unitless SSIM metric. Other metrics such as MAE or RMSE are not directly comparable between bands, as they depend on the absolute magnitude and statistical distribution of reflectance values, which differ across spectral ranges. In contrast, SSIM measures local structural similarity based on relative intensity patterns rather than absolute values. While not entirely invariant to scale differences, SSIM provides a more robust and interpretable basis for cross-band comparison in this context.
 \begin{table}[h!]
 \centering
@@ -207,7 +206,7 @@ coordinates {
 \label{fig:ssim_per_band}
 \end{figure}
 
-It is worth noting, however, that these findings contradict those reported in~\cite{CR_SEN2_dRNN}, where the authors observed the 10~m and 20~m bands to achieve the highest reconstruction quality, while the 60~m bands performed the worst. Their experiments were conducted on the full SEN12MS-CR dataset, which may account for the differing behavior observed in the present study.
+It is worth noting, however, that these findings contradict those reported in~\cite{CR_SEN2_dRNN}, where the authors observed the 10~m and 20~m bands to achieve the highest reconstruction quality, while the 60~m bands performed the worst. Their experiments were conducted on the full SEN12-MS-CR dataset, which may account for the differing behavior observed in the present study.
 
 To visually complement the quantitative assessment, representative grayscale examples for each Sentinel-2 band are provided in Appendix~\ref{appendix:bandwise_results}. Each example illustrates the generated band alongside its corresponding ground-truth reference, enabling a direct visual evaluation of the reconstruction quality and spatial consistency across the spectrum.
 
@@ -216,7 +215,6 @@ To visually complement the quantitative assessment, representative grayscale exa
 \section{Results on Cloud Removal}
 \label{sec:cloud_removal}
 Cloud contamination remains one of the most persistent challenges in the field of remote sensing. To evaluate the model’s capability to address this issue, the model trained on the complete winter subset of the SEN12-MS dataset was assessed using the complementary SEN12-MS-CR dataset (see Section~\ref{sec:datasets}). The SEN12-MS-CR dataset consists of triplets comprising SAR images, cloud-contaminated optical images, and their corresponding cloud-free optical references, covering identical geographic regions across all 13 Sentinel-2 spectral bands.
-
 For quantitative evaluation, a subset of 2,000 samples from the winter portion of the SEN12-MS-CR dataset was used. The evaluation data underwent identical preprocessing and clipping procedures as described in Section~\ref{subsec:preprocessing}, ensuring consistency with the model’s training conditions.
 
 \begin{table}[h!]
@@ -235,7 +233,7 @@ For quantitative evaluation, a subset of 2,000 samples from the winter portion o
     \label{tab:quantitative_result_cr}
 \end{table}
 
-The quantitative results presented in Table~\ref{tab:quantitative_result_cr} demonstrate that the model attains robust and high-quality performance in cloud removal on the SEN12MS-CR dataset, despite not being explicitly trained for this task. Notably, the reconstruction accuracy surpasses that achieved on the model’s own training subset (SEN12MS) across all evaluated metrics. The spectral fidelity, measured by the SAM, improved by approximately one degree, indicating better preservation of spectral characteristics. Remarkably, the trained Pix2Pix model even outperforms several specialized approaches, including DiffCR~\cite{DiffCR}, the current state-of-the-art model for cloud removal on SEN12MS-CR—an outcome that was beyond the original scope of this thesis. This result is particularly significant given that Pix2Pix is typically employed as a baseline model in related studies and is often reported to yield the lowest performance among compared methods 
+The quantitative results presented in Table~\ref{tab:quantitative_result_cr} demonstrate that the model attains robust and high-quality performance in cloud removal on the SEN12-MS-CR dataset, despite not being explicitly trained for this task. Notably, the reconstruction accuracy surpasses that achieved on the model’s own training subset (SEN12-MS) across all evaluated metrics. The spectral fidelity, measured by the SAM, improved by approximately one degree, indicating better preservation of spectral characteristics. Remarkably, the trained Pix2Pix model even outperforms several specialized approaches, including DiffCR~\cite{DiffCR}, the current state-of-the-art model for cloud removal on SEN12-MS-CR—an outcome that was beyond the original scope of this thesis. This result is particularly significant given that Pix2Pix is typically employed as a baseline model in related studies and is often reported to yield the lowest performance among compared methods 
 
 The qualitative results shown in Figure~\ref{fig:qualitative_results_cloud_removal} further illustrate the model’s effectiveness in removing cloud contamination. The model successfully reconstructs cloud-free optical imagery from the corresponding SAR inputs, even when the reference optical images are heavily obscured. As seen in columns (a) and (b), the model accurately restores regions affected by thin cloud cover while preserving structural and textural details. In partially occluded cases, illustrated in (c) and (d), the reconstructed outputs maintain clear boundaries, sharp edges, and consistent color representation. Remarkably, even for fully cloud-covered scenes, as in (e), the model generates realistic optical imagery and reliably reproduces urban and structural features.
 
@@ -279,7 +277,7 @@ The qualitative results shown in Figure~\ref{fig:qualitative_results_cloud_remov
     Qualitative results of the model trained on the full winter subset of the SEN12-MS dataset, evaluated on the complementary SEN12-MS-CR dataset for the \textbf{cloud removal} task.  
     Columns: 
     \textbf{(i)}~SAR input (pseudo-RGB), 
-    \textbf{(ii)}~cloud-contaminated optical image, 
+    \textbf{(ii)}~reference cloud-contaminated optical image, 
     \textbf{(iii)}~generated cloud-free optical image, and 
     \textbf{(iv)}~reference cloud-free optical image (ground truth).}
     \label{fig:qualitative_results_cloud_removal}
