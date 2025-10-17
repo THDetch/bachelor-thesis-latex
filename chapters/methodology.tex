@@ -195,9 +195,9 @@ Following common practices in the literature, Sentinel-1 backscatter values (in 
 
 After clipping, all values were linearly normalized to the \textit{tanh} range \([-1, 1]\), consistent with the \texttt{Tanh} activation used in the generator’s output layer. The original spatial resolution of \(256 \times 256\) pixels was maintained, and no data augmentation was applied, as the dataset already exhibits substantial spatial and spectral diversity.
 
-\section{Models}
-\subsection{Pix2Pix Model}
-The image translation task in this thesis is addressed using the \textit{Pix2Pix} model, introduced by Isola et al.~\cite{pix2pix_2018}. The Pix2Pix framework has gained widespread popularity in the field of SAR-to-optical image translation and is commonly employed as a baseline in nearly all studies addressing this problem. Owing to its proven effectiveness and extensive use in related work, it was selected as the primary model for the experiments conducted in this thesis.
+\section{Pix2Pix Model}
+% \subsection{Pix2Pix Model}
+The image translation task in this thesis is addressed using the Pix2Pix model, introduced by Isola et al.~\cite{pix2pix_2018}. The Pix2Pix framework has gained widespread popularity in the field of SAR-to-optical image translation and is commonly employed as a baseline in nearly all studies addressing this problem. Owing to its proven effectiveness and extensive use in related work, it was selected as the primary model for the experiments conducted in this thesis.
 
 Pix2Pix is based on the concept of conditional generative adversarial networks (cGANs), which extend the original GAN formulation by conditioning both the generator and discriminator on an input image. In this setup, the generator $G$ learns to map an input image $x$ to an output image $y$, while the discriminator $D$ learns to distinguish between real image pairs $\{x, y\}$ and synthesized pairs $\{x, G(x)\}$. This adversarial objective encourages the generated outputs to be both realistic and structurally consistent with the given input.
 
@@ -228,7 +228,7 @@ Overall, the Pix2Pix framework provides a principled and general-purpose solutio
 \section{Training Procedure}
 This section describes the complete training pipeline adopted for the proposed SAR-to-optical image translation model. It outlines the experimental setup, loss formulations, optimization strategy, and monitoring procedures that together ensure stable adversarial training and effective convergence. Emphasis is placed on the integration of multiple complementary loss functions to enhance perceptual and structural fidelity, as well as on the staged optimization scheme designed to mitigate common GAN instabilities. The overall workflow aims to achieve a robust balance between pixel-level accuracy, perceptual realism, and generalization performance across diverse imaging conditions.
 
-\subsection{Experimental Setup} All experiments were implemented in Python~3.11, PyTorch 2.4.0, and CUDA 12.4, using the official \texttt{Pix2Pix} implementation\footnote{\url{https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix}}. Training was conducted on an NVIDIA RTX~A5000 GPU with CUDA acceleration. The training, validation, and test sets were derived from the preprocessed SEN12-MS subset described in Section~\ref{subsec:preprocessing}. Each sample consisted of a Sentinel-1 SAR input patch (VV and VH channels) paired with the corresponding Sentinel-2 optical patch comprising 13 spectral bands.
+\subsection{Experimental Setup} All experiments were implemented in Python~3.11, PyTorch 2.4.0, and CUDA 12.4, using the official Pix2Pix implementation\footnote{\url{https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix}}. Training was conducted on an NVIDIA RTX~A5000 GPU with CUDA acceleration. The training, validation, and test sets were derived from the preprocessed SEN12-MS subset described in Section~\ref{subsec:preprocessing}. Each sample consisted of a Sentinel-1 SAR input patch (VV and VH channels) paired with the corresponding Sentinel-2 optical patch comprising 13 spectral bands.
 
 \subsection{Loss Functions}
 \label{subsec:losses}
