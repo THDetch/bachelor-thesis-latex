@@ -247,7 +247,7 @@ The overall objective function can be expressed as
 where:
 \begin{itemize}
     \item $\mathcal{L}_{\text{GAN}}$ denotes the adversarial loss (LSGAN), encouraging the generator to produce outputs indistinguishable from real images. 
-    \item $\mathcal{L}_{\text{L1}}$ represents the pixel-wise reconstruction loss (Mean Absolute Error), enforcing global structural similarity between the generated and target images.
+    \item $\mathcal{L}_{\text{L1}}$ represents the pixel-wise reconstruction loss (MAE), enforcing global structural similarity between the generated and target images.
     \item $\mathcal{L}_{\text{SSIM}}$ is the Structural Similarity Index Measure loss, promoting local structural consistency.
     \item $\mathcal{L}_{\text{LPIPS}}$ denotes the Learned Perceptual Image Patch Similarity loss, which captures high-level perceptual differences.
     \item $\lambda_{\text{L1}}, \lambda_{\text{SSIM}},$ and $\lambda_{\text{LPIPS}}$ are weighting coefficients that control the relative contribution of each term.
