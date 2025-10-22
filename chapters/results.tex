@@ -1,4 +1,5 @@
 \chapter{Results}
+\label{chapter:results}
 This chapter presents the experimental results and analyses of the Pix2Pix model across multiple evaluation settings. Both quantitative and qualitative assessments are conducted to examine the model’s performance in translating Sentinel-1 SAR imagery into full-spectrum Sentinel-2 optical outputs. The primary objectives are to evaluate the model’s reconstruction capability, investigate the influence of training data scale, and assess its ability in cloud removal.
 Given the high sensitivity of GAN-based frameworks to hyperparameter choices, several experimental configurations were explored to ensure stable convergence and high-quality reconstructions. Initial experiments were performed using 20\% of the winter subset to efficiently test different settings. However, the results obtained with this limited data were unsatisfactory. Following the hypothesis that training on a larger dataset would enhance performance, the model was subsequently trained on the entire winter subset, consisting of 31,825 image pairs.
 Beyond the dataset-scale comparison, additional analyses examine the reconstruction quality across individual Sentinel-2 bands and evaluate the model’s ability to remove cloud contamination using the complementary SEN12-MS-CR dataset. Together, these experiments provide a comprehensive view of the model’s spatial, spectral, and perceptual performance under realistic remote-sensing scenarios.
@@ -39,7 +40,7 @@ The preprocessing steps, training pipeline, and hyperparameter settings were ide
     Columns: 
     \textbf{(i)}~SAR input (pseudo RGB), 
     \textbf{(ii)}~model-generated optical image, 
-    \textbf{(iii)}~ground-truth Sentinel-2 image. All optical images throughout this thesis are depicted in RGB (B4, B4, B2) batch.}
+    \textbf{(iii)}~ground-truth Sentinel-2 image. All optical images throughout this thesis are depicted in RGB (B4, B3, B2) batch.}
     \label{fig:qualitative_results_20}
 \end{figure}
 

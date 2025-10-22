@@ -30,6 +30,9 @@
 \usepackage{listings}
 \usepackage{colortbl}
 
+\usepackage{ragged2e}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
 
 \pgfplotsset{compat=1.18}
 
@@ -113,7 +116,7 @@
 
 \input{chapters/introduction.tex}
 \input{chapters/background.tex}
-% \input{chapters/related-work.tex}
+\input{chapters/related-work.tex}
 \input{chapters/methodology.tex}
 \input{chapters/results.tex}
 \input{chapters/ablations.tex}

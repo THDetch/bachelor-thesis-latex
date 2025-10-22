@@ -1,4 +1,5 @@
 \chapter{Methodology}
+\label{chapter:methodology}
 This chapter outlines the methodological framework adopted for the SAR-to-optical translation task. It details the formulation of the problem as a supervised image-to-image regression, describes the datasets and preprocessing procedures used, and presents the model architectures and training strategies employed. In particular, the Pix2Pix conditional generative adversarial network (cGAN) serves as the core model for learning the mapping between Sentinel-1 SAR inputs and Sentinel-2 multispectral optical outputs. The chapter further elaborates on the design of the loss functions, optimization process, and experimental setup used to ensure stable and effective training. Finally, the evaluation metrics are introduced to provide both quantitative and perceptual assessments of the model’s performance, encompassing spatial fidelity, structural consistency, and spectral accuracy.
 \section{Problem Formulation}
 
@@ -284,40 +285,54 @@ All relevant training statistics, including generator and discriminator losses, 
 \section{Evaluation Metrics}
 The effectiveness of SAR-to-optical image translation depends not only on the choice of translation models but also on the methods employed for quality assessment. Image Quality Assessment (IQA) serves two key purposes: (i) to objectively evaluate the quality of results produced by different models, and (ii) to guide the optimization of network architectures and algorithms~\cite{quality_assessment_S2OT}.
 
-In~\cite{quality_assessment_S2OT}, five image quality assessment (IQA) metrics—SSIM, FSIM, MSE, LPIPS, and DISTS—were systematically evaluated through image restoration experiments to determine their suitability for SAR-to-optical translation tasks. The study found that SSIM, MSE, and LPIPS exhibited strong consistency with human visual perception, demonstrated stable convergence, and effectively captured both structural and textural characteristics. In contrast, FSIM often failed to represent fine details accurately, while DISTS showed instability. Consequently, the authors recommended SSIM, MSE, and LPIPS as complementary metrics for assessing pixel-level accuracy, structural similarity, and perceptual quality, respectively. However, based on the analysis conducted in this thesis across 16 related studies, SSIM, PSNR, and SAM remain the most widely adopted evaluation metrics in SAR-to-optical translation, fusion, and cloud removal research, whereas LPIPS and MSE appear less frequently, as summarized in Table~\ref{tab:iqa}. This trend aligns with the observations reported in the literature survey by~\cite{sar_2_opt_CGAN_survey_taxonomy}.
+In~\cite{quality_assessment_S2OT}, five image quality assessment (IQA) metrics —SSIM, FSIM, MSE, LPIPS, and DISTS— were systematically evaluated through image restoration experiments to determine their suitability for SAR-to-optical translation tasks. The study found that SSIM, MSE, and LPIPS exhibited strong consistency with human visual perception, demonstrated stable convergence, and effectively captured both structural and textural characteristics. In contrast, FSIM often failed to represent fine details accurately, while DISTS showed instability. Consequently, the authors recommended SSIM, MSE, and LPIPS as complementary metrics for assessing pixel-level accuracy, structural similarity, and perceptual quality, respectively. However, based on the analysis conducted in this thesis across 16 related studies, SSIM, PSNR, and SAM remain the most widely adopted evaluation metrics in SAR-to-optical translation, fusion, and cloud removal research, whereas LPIPS and MSE appear less frequently, as summarized in Table~\ref{tab:iqa}. This trend aligns with the observations reported in the literature survey by~\cite{sar_2_opt_CGAN_survey_taxonomy}.
 
 \begin{table}[h!]
 \centering
-\begin{tabular}{lll}
+\footnotesize
+\begingroup
+\setlength{\tabcolsep}{4pt} % tighter columns
+\renewcommand{\arraystretch}{1.1}
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabularx}{\textwidth}{l Y c}
 \toprule
 \textbf{Metric} & \textbf{References} & \textbf{Frequency} \\
 \midrule
-Structural Similarity Index Measurement (SSIM)~\cite{iqa_ssim}
- & \cite{CR_Advances_Review_ORS, RS_Data_Fusion_GANs_sota, DiffCR, c_diffusion_s2o, s2o_ViT_cGAN, S2MS_GAN, c_guided_fus_s2ot, transfusion_cr, trans_gan_CF, hvt_cgan, msf_gan, diffusion_memory} 
- & 12 \\
-Peak Signal-to-Noise Ratio (PSNR)~\cite{iqa_psnr}
- & \cite{CR_Advances_Review_ORS, DiffCR, CR_RS_spati_atten_GAN, s2o_ViT_cGAN, CR_RS_GAN_s2o, S2MS_GAN, c_guided_fus_s2ot, transfusion_cr, trans_gan_CF, hvt_cgan, msf_gan, diffusion_memory} 
- & 12 \\
-Spectral Angle Mapper (SAM)~\cite{iqa_sam}
- & \cite{aCGAN_fuse_sar_MS, RS_Data_Fusion_GANs_sota, CR_RS_GAN_s2o, S2MS_GAN, c_guided_fus_s2ot, transfusion_cr, trans_gan_CF, cond_brownian, hvt_cgan, msf_gan} 
- & 11 \\
-Fréchet Inception Distance (FID)~\cite{iqa_fid}
- & \cite{DiffCR, c_diffusion_s2o, s2o_ViT_cGAN, cond_brownian, hvt_cgan, msf_gan} 
- & 6 \\
-Root Mean Square Error (RMSE) 
- & \cite{aCGAN_fuse_sar_MS, CR_Advances_Review_ORS, RS_Data_Fusion_GANs_sota, CR_RS_GAN_s2o, c_guided_fus_s2ot} 
- & 5 \\
-Learned Perceptual Image Patch Similarity (LPIPS)~\cite{iqa_lpips}
- & \cite{CR_Advances_Review_ORS, DiffCR, S2MS_GAN, cond_brownian, diffusion_memory} 
- & 5 \\
-Mean Absolute Error (MAE) 
- & \cite{CR_RS_GAN_s2o, c_guided_fus_s2ot} 
- & 2 \\
-Mean Square Error (MSE) 
- & \cite{CR_RS_spati_atten_GAN, trans_gan_CF} 
- & 2 \\
+Structural Similarity Index Measurement (SSIM)~\cite{iqa_ssim} &
+\cite{CR_Advances_Review_ORS, RS_Data_Fusion_GANs_sota, DiffCR, c_diffusion_s2o, s2o_ViT_cGAN, S2MS_GAN, c_guided_fus_s2ot, transfusion_cr, trans_gan_CF, hvt_cgan, msf_gan, diffusion_memory} &
+12 \\
+
+Peak Signal-to-Noise Ratio (PSNR)~\cite{iqa_psnr} &
+\cite{CR_Advances_Review_ORS, DiffCR, CR_RS_spati_atten_GAN, s2o_ViT_cGAN, CR_RS_GAN_s2o, S2MS_GAN, c_guided_fus_s2ot, transfusion_cr, trans_gan_CF, hvt_cgan, msf_gan, diffusion_memory} &
+12 \\
+
+Spectral Angle Mapper (SAM)~\cite{iqa_sam} &
+\cite{aCGAN_fuse_sar_MS, RS_Data_Fusion_GANs_sota, CR_RS_GAN_s2o, S2MS_GAN, c_guided_fus_s2ot, transfusion_cr, trans_gan_CF, cond_brownian, hvt_cgan, msf_gan} &
+11 \\
+
+Fréchet Inception Distance (FID)~\cite{iqa_fid} &
+\cite{DiffCR, c_diffusion_s2o, s2o_ViT_cGAN, cond_brownian, hvt_cgan, msf_gan} &
+6 \\
+
+Root Mean Square Error (RMSE) &
+\cite{aCGAN_fuse_sar_MS, CR_Advances_Review_ORS, RS_Data_Fusion_GANs_sota, CR_RS_GAN_s2o, c_guided_fus_s2ot} &
+5 \\
+
+Learned Perceptual Image Patch Similarity (LPIPS)~\cite{iqa_lpips} &
+\cite{CR_Advances_Review_ORS, DiffCR, S2MS_GAN, cond_brownian, diffusion_memory} &
+5 \\
+
+Mean Absolute Error (MAE) &
+\cite{CR_RS_GAN_s2o, c_guided_fus_s2ot} &
+2 \\
+
+Mean Square Error (MSE) &
+\cite{CR_RS_spati_atten_GAN, trans_gan_CF} &
+2 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
+\end{adjustbox}
+\endgroup
 \caption[Common evaluation metrics in SAR-to-optical and cloud removal]{Frequency of common evaluation metrics used in SAR-to-optical and cloud-removal studies.}
 \label{tab:iqa}
 \end{table}

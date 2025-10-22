@@ -46,12 +46,19 @@
   year      = {2023}
 }
 
-@article{enomoto2017,
-  title   = {{Image restoration from satellite cloud contamination using multispectral conditional GAN}},
-  author  = {Enomoto, Ryosuke and others},
-  journal = {Remote Sensing (likely)},
-  year    = {2017}
+
+@inproceedings{filmy_cloudy_NIR_Enomoto,
+  title     = {Filmy Cloud Removal on Satellite Imagery with Multispectral Conditional Generative Adversarial Nets},
+  url       = {http://dx.doi.org/10.1109/CVPRW.2017.197},
+  doi       = {10.1109/cvprw.2017.197},
+  booktitle = {2017 IEEE Conference on Computer Vision and Pattern Recognition Workshops (CVPRW)},
+  publisher = {IEEE},
+  author    = {Enomoto, Kenji and Sakurada, Ken and Wang, Weimin and Fukui, Hiroshi and Matsuoka, Masashi and Nakamura, Ryosuke and Kawaguchi, Nobuo},
+  year      = {2017},
+  month     = jul,
+  pages     = {1533–1541}
 }
+
 
 @inproceedings{A_cGAN_fuse_sar_MS_CR,
   title     = {{A conditional generative adversarial network to fuse SAR and multispectral optical data for cloud removal from Sentinel-2 images}},
@@ -60,11 +67,15 @@
   year      = {2018}
 }
 
-@inproceedings{syn_ms_sar_opt_MT_cGAN,
-  title     = {{Synthesis of multispectral optical images from SAR/optical multitemporal data using conditional GANs}},
-  author    = {Bermudez, Jose and Happ, Philipp and Boulch, Alexandre and others},
-  booktitle = {IGARSS},
-  year      = {2018}
+@article{syn_ms_sar_opt_MT_cGAN,
+  author  = {Castro, Jose and Nigri Happ, Patrick and Feitosa, Raul and Oliveira, Dário},
+  year    = {2019},
+  month   = {02},
+  pages   = {1-5},
+  title   = {{Synthesis of Multispectral Optical Images From SAR/Optical Multitemporal Data Using Conditional Generative Adversarial Networks}},
+  volume  = {PP},
+  journal = {IEEE Geoscience and Remote Sensing Letters},
+  doi     = {10.1109/LGRS.2019.2894734}
 }
 
 @inproceedings{sen12_2018,
@@ -108,6 +119,16 @@
   keywords = {Clouds;Optical imaging;Optical sensors;Satellites;Remote sensing;Image reconstruction;Earth;Cloud removal;data fusion;image reconstruction;sequence-to-sequence;synthetic aperture radar (SAR)-optical;time series}
 }
 
+@misc{RICE_dataset,
+  title         = {{A Remote Sensing Image Dataset for Cloud Removal}},
+  author        = {Daoyu Lin and Guangluan Xu and Xiaoke Wang and Yang Wang and Xian Sun and Kun Fu},
+  year          = {2019},
+  eprint        = {1901.00600},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CV},
+  url           = {https://arxiv.org/abs/1901.00600}
+}
+
 @article{sar2opt_cGAN_Optim_oppr_limits,
   title   = {{SAR-to-Optical Image Translation Based on Conditional Generative Adversarial Networks—Optimization, Opportunities and Limits}},
   author  = {Fuentes Reyes, M. and Auer, S. and Merkle, N. and Henry, C. and Schmitt, M.},
@@ -118,7 +139,7 @@
   year    = {2019}
 }
 
-@article{wang2019,
+@article{s2ot_s_cycle_adv,
   title   = {{SAR-to-optical image translation using supervised cycle-consistent adversarial networks}},
   author  = {Wang, L. and Xu, X. and Yu, Y. and Yang, R. and Gui, R. and Xu, Z. and Pu, F.},
   journal = {IEEE Access},
@@ -145,28 +166,23 @@
 
 @misc{CR_RS_spati_atten_GAN,
   title         = {{Cloud removal for remote sensing imagery via spatial attention generative adversarial network}},
-  author        = {Pan, B. and others},
+  author        = {Heng Pan},
   year          = {2020},
   eprint        = {2009.13015},
   archiveprefix = {arXiv}
 }
 
-@article{gao2020,
-  title   = {{Cloud removal with fusion of high-resolution optical and SAR images using generative adversarial networks}},
-  author  = {Gao, Feng and others},
-  journal = {Remote Sensing},
-  volume  = {12},
-  number  = {1},
-  pages   = {191},
-  year    = {2020}
+@article{naderi2021,
+  author  = {Darbaghshahi, Faramarz Naderi and Mohammadi, Mohammad Reza and Soryani, Mohsen},
+  journal = {IEEE Transactions on Geoscience and Remote Sensing},
+  title   = {Cloud Removal in Remote Sensing Images Using Generative Adversarial Networks and SAR-to-Optical Image Translation},
+  year    = {2022},
+  volume  = {60},
+  number  = {},
+  pages   = {1-9},
+  doi     = {10.1109/TGRS.2021.3131035}
 }
 
-@inproceedings{naderi2021,
-  title     = {{Cloud removal in remote sensing images using generative adversarial networks with dilated residual inception blocks}},
-  author    = {Naderi Darbaghshahi, F. and Mohammadi, M. R.},
-  booktitle = {IGARSS},
-  year      = {2021}
-}
 
 @article{CR_RS_GAN_s2o,
   title    = {{Cloud Removal in Remote Sensing Images Using Generative Adversarial Networks and SAR-to-Optical Image Translation}},
@@ -179,28 +195,39 @@
   keywords = {Clouds;Generative adversarial networks;Optical imaging;Generators;Optical sensors;Synthetic aperture radar;Radar polarimetry;Cloud removal;deep learning;generative adversarial network (GAN);optical imagery;SAR-to-optical translation;synthetic aperture radar (SAR)}
 }
 
-@article{UnCRtainTS,
-  title   = {{UnCRtainTS: Uncertainty quantification for cloud removal in optical satellite time series}},
-  author  = {Ebel, P. and others},
-  journal = {arXiv preprint},
-  eprint  = {2304.05464},
-  year    = {2022}
+@misc{UnCRtainTS,
+  title         = {{UnCRtainTS: Uncertainty Quantification for Cloud Removal in Optical Satellite Time Series}},
+  author        = {Patrick Ebel and Vivien Sainte Fare Garnot and Michael Schmitt and Jan Dirk Wegner and Xiao Xiang Zhu},
+  year          = {2023},
+  eprint        = {2304.05464},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CV},
+  url           = {https://arxiv.org/abs/2304.05464}
 }
 
 @article{c_diffusion_s2o,
-  title   = {{Conditional diffusion for SAR to optical image translation}},
-  author  = {Bai, W. and others},
-  journal = {IEEE Transactions on Geoscience and Remote Sensing},
-  year    = {2023}
+  author  = {Bai, Xinyu and Pu, Xinyang and Xu, Feng},
+  journal = {IEEE Geoscience and Remote Sensing Letters},
+  title   = {{Conditional Diffusion for SAR to Optical Image Translation}},
+  year    = {2024},
+  volume  = {21},
+  number  = {},
+  pages   = {1-5},
+  doi     = {10.1109/LGRS.2023.3337143}
 }
 
-@misc{DiffCR,
-  title         = {{DiffCR: A fast conditional diffusion framework for cloud removal from optical satellite images}},
-  author        = {Zou, H. and others},
-  year          = {2023},
-  eprint        = {2308.04417},
-  archiveprefix = {arXiv}
+@article{DiffCR,
+  author  = {Zou, Xuechao and Li, Kai and Xing, Junliang and Zhang, Yu and Wang, Shiying and Jin, Lei and Tao, Pin},
+  journal = {IEEE Transactions on Geoscience and Remote Sensing},
+  title   = {{DiffCR: A Fast Conditional Diffusion Framework for Cloud Removal From Optical Satellite Images}},
+  year    = {2024},
+  volume  = {62},
+  number  = {},
+  pages   = {1-14},
+  doi     = {10.1109/TGRS.2024.3365806}
 }
+
+
 @misc{s2o_color_super_diff,
   title         = {{SAR to Optical Image Translation with Color Supervised Diffusion Model}},
   author        = {Xinyu Bai and Feng Xu},
@@ -222,28 +249,37 @@
 }
 
 @article{S2MS_GAN,
-  title   = {{High-Resolution SAR-to-Multispectral Image Translation Based on S2MS-GAN}},
-  author  = {Liu, J. and others},
-  journal = {Remote Sensing},
-  volume  = {16},
-  number  = {21},
-  pages   = {4045},
-  year    = {2024}
+  author         = {Liu, Yang and Han, Qingcen and Yang, Hong and Hu, Huizhu},
+  title          = {{High-Resolution SAR-to-Multispectral Image Translation Based on S2MS-GAN}},
+  journal        = {Remote Sensing},
+  volume         = {16},
+  year           = {2024},
+  number         = {21},
+  article-number = {4045},
+  url            = {https://www.mdpi.com/2072-4292/16/21/4045},
+  issn           = {2072-4292},
+  doi            = {10.3390/rs16214045}
 }
 
-@article{dosovitskiy2020,
-  title   = {{An image is worth 16×16 words: Transformers for image recognition at scale}},
-  author  = {Dosovitskiy, A. and others},
-  journal = {arXiv preprint},
-  eprint  = {2010.11929},
-  year    = {2020}
+@misc{ViT_2020,
+  title         = {{An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale}},
+  author        = {Alexey Dosovitskiy and Lucas Beyer and Alexander Kolesnikov and Dirk Weissenborn and Xiaohua Zhai and Thomas Unterthiner and Mostafa Dehghani and Matthias Minderer and Georg Heigold and Sylvain Gelly and Jakob Uszkoreit and Neil Houlsby},
+  year          = {2021},
+  eprint        = {2010.11929},
+  archiveprefix = {arXiv},
+  primaryclass  = {cs.CV},
+  url           = {https://arxiv.org/abs/2010.11929}
 }
 
-@inproceedings{s2o_ViT_cGAN,
-  title     = {{SAR-to-optical image translation using Vision Transformer-based cGAN}},
-  author    = {Park, S. and others},
-  booktitle = {IGARSS},
-  year      = {2025}
+@article{s2o_ViT_cGAN,
+  author  = {Park, Shinyoung and Lee, Hojung and Lee, Seongwook},
+  journal = {IEEE Sensors Journal},
+  title   = {{SAR-to-Optical Image Translation Using Vision Transformer-Based CGAN}},
+  year    = {2025},
+  volume  = {25},
+  number  = {10},
+  pages   = {18503-18514},
+  doi     = {10.1109/JSEN.2025.3555933}
 }
 
 @article{gu2023,
@@ -270,12 +306,6 @@
   year    = {2024}
 }
 
-@inproceedings{swinumamba2024micipai,
-  title     = {{Swin-UMamba: Mamba-based UNet with ImageNet-based pretraining}},
-  author    = {Liu, Jiarun and others},
-  booktitle = {MICCAI 2024 Workshop},
-  year      = {2024}
-}
 
 @incollection{book_Physics_Techniques_RS,
   title     = {{Introduction}},
