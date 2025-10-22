@@ -216,7 +216,7 @@ The final objective is then:
 \end{equation}
 where $\lambda$ balances realism and reconstruction accuracy. Following Isola et al., $\lambda = 100$ is typically used. In addition, supplementary loss components were incorporated, as they demonstrated improved training convergence and led to higher-quality reconstructions (see the ablation study on loss functions in Section~\ref{subsec:ablation_loss}).
 
-The generator is implemented as a U-Net encoder–decoder~\cite{U-net_2015}. Unlike a plain encoder–decoder, U-Net introduces skip connections between corresponding downsampling and upsampling layers, allowing low-level spatial details from the input to directly propagate to the output. This design is particularly effective in tasks where the input and output share spatial structures, such as SAR-to-optical translation.
+The generator is implemented as a U-Net encoder–decoder~\cite{U_net_2015}. Unlike a plain encoder–decoder, U-Net introduces skip connections between corresponding downsampling and upsampling layers, allowing low-level spatial details from the input to directly propagate to the output. This design is particularly effective in tasks where the input and output share spatial structures, such as SAR-to-optical translation.
 
 The discriminator follows a PatchGAN architecture, which classifies local $N \times N$ image patches as real or fake instead of operating on the entire image~\cite{pix2pix_2018}. This approach emphasizes high-frequency accuracy and enforces local realism, while the $\ell_1$ term ensures global structural coherence. The original work demonstrated that a patch size of $70 \times 70$ provides a good trade-off between reconstruction quality and computational efficiency.
 
