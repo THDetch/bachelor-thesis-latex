@@ -8,7 +8,7 @@ Beyond the dataset-scale comparison, additional analyses examine the reconstruct
 In the initial stage of experimentation, only 20\% of the data were used for training. From the 31,825 image pairs in the winter subset, 3,215, 981, and 981 pairs were allocated for training, validation, and testing, respectively. The model was trained to reconstruct the full optical spectrum consisting of 13 bands, using the dual VV and VH polarization SAR data as input.
 The preprocessing steps, training pipeline, and hyperparameter settings were identical to those described previously and were applied unchanged to the experiments on the full winter subset. Moreover, the training was conducted using the full combination of loss functions, as discussed in Section~\ref{subsec:losses}.
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
     \centering
     \setlength{\tabcolsep}{2pt} % horizontal padding between columns (same as ablation)
     \renewcommand{\arraystretch}{1.0} % vertical padding (same as ablation)
@@ -49,7 +49,7 @@ Examining the qualitative results in Figure~\ref{fig:qualitative_results_20}, th
 
 Overall, these observations, together with the quantitative results presented in Table~\ref{tab:quantitative_result_20}, confirm that the model effectively learns the underlying SAR-to-optical mapping and that an optimal training configuration was achieved. While the Pix2Pix model demonstrates strong capability in capturing global spatial correspondences, it exhibits limitations in synthesizing fine textures, particularly within homogeneous or low-contrast regions of the SAR input. Furthermore, the inherent differences in sensing mechanisms and physical characteristics between SAR and optical imagery pose additional challenges for accurately reconstructing fine spatial and spectral details. Motivated by these findings, it was hypothesized that model performance could be enhanced through training on a larger-scale dataset. To validate this hypothesis, the model was subsequently trained on the complete winter subset, and the corresponding results are presented in the following section
 
-\begin{table}[h!]
+\begin{table}[!htbp]
 \centering
 \caption[Quantitative results of 20\% training winter subset]{Quantitative results of the training on 20\% of the winter subset.}
 \begin{tabular}{lccccc}
@@ -67,7 +67,7 @@ GAN-based models generally require large amounts of training data to achieve hig
 
 The model required approximately 25$\sim$hours to complete 150~epochs of training. The experimental hypothesis was confirmed: increasing the size of the training dataset led to a clear improvement in model performance. As shown in Table~\ref{tab:quantitative_result_scale}, expanding the training data from 20\% to the full winter subset resulted in substantial gains across all evaluation metrics. In particular, the LPIPS score decreased from 0.224 to 0.173, indicating that the model trained on the full dataset produced outputs with higher perceptual similarity to the ground truth. Likewise, the median SAM value dropped from 6.71° to 4.41°, demonstrating a notable enhancement in spectral consistency across all bands. Furthermore, PSNR increased by approximately 5$\sim$dB, while MAE and RMSE decreased by more than 25\%, confirming the strong positive effect of data scale on reconstruction quality.
 
-\begin{table}[h!]
+\begin{table}[!htbp]
     \centering
     \caption[Quantitative results for different training data scales: 20\% \& 100\%]{Quantitative results of training on 20\% and 100\% of the winter subset. Arrows ($\uparrow$ / $\downarrow$) indicate whether higher or lower values denote better performance, respectively.}
     \begin{tabular}{lcccccc}
@@ -84,7 +84,7 @@ Similarly, the image reconstruction quality improves noticeably with a larger tr
 
 These qualitative and quantitative improvements demonstrate the capability of the Pix2Pix model to reconstruct optical imagery solely from SAR data. Furthermore, expanding the volume and diversity of the training dataset enables the model to more effectively learn the perceptual and spectral characteristics of the optical domain, thereby producing reconstructions that are both more realistic and color-consistent.
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
     \centering
     \setlength{\tabcolsep}{2pt} % horizontal padding between columns (same as ablation)
     \renewcommand{\arraystretch}{1.0} % vertical padding (same as ablation)
@@ -129,7 +129,7 @@ Another objective of this work was to assess the model’s ability to reliably r
 For this purpose, the model trained on the full winter subset was evaluated separately for all Sentinel-2 bands, and the corresponding results are summarized in Table~\ref{tab:per_band_validation}.
 When comparing the reconstruction quality across individual bands, the focus is placed on the unitless SSIM metric. Other metrics such as MAE or RMSE are not directly comparable between bands, as they depend on the absolute magnitude and statistical distribution of reflectance values, which differ across spectral ranges. In contrast, SSIM measures local structural similarity based on relative intensity patterns rather than absolute values. While not entirely invariant to scale differences, SSIM provides a more robust and interpretable basis for cross-band comparison in this context.
 
-\begin{table}[h!]
+\begin{table}[!htbp]
 \centering
 \caption[Per-band validation results for full dataset training]{%
 Per-band quantitative validation results of the Pix2Pix model trained on the full winter subset. Each Sentinel-2 band’s central wavelength, spectral designation, and native spatial resolution are listed for reference. Best results are highlighted in \textcolor{green!50!black}{green} and worst in \textcolor{red!70!black}{red}.}
@@ -157,7 +157,7 @@ B12  &  31.48  &  0.8586 & 2190 & SWIR / 20 \\
 \label{tab:per_band_validation}
 \end{table}
 Notably, Band~8 (NIR), despite its native spatial resolution of 10~m, exhibits the lowest reconstruction performance among all spectral bands, including those with coarser resolutions, as illustrated in Figure~\ref{fig:ssim_per_band}. This indicates a weaker correlation between SAR backscatter and NIR reflectance compared to other spectral regions, likely due to their differing sensitivities to surface structure and vegetation properties. This limitation may also stem from the use of winter-only training samples, where vegetation-related information captured by the NIR band is comparatively scarce. In contrast, the 60~m atmospheric correction bands—B1 (Aerosols), B9 (Water Vapour), and B10 (Cirrus)—are reconstructed more reliably, with B1 achieving the highest SSIM overall. Their smoother spectral characteristics and lower spatial variability likely facilitate more stable and accurate predictions, even after resampling to 10~m.
-\begin{figure}[h!]
+\begin{figure}[!htbp]
 \centering
 \begin{tikzpicture}
 \begin{axis}[
@@ -207,14 +207,12 @@ It is worth noting, however, that these findings contradict those reported in~\c
 
 To visually complement the quantitative assessment, representative grayscale examples for each Sentinel-2 band are provided in Appendix~\ref{appendix:bandwise_results}. Each example illustrates the generated band alongside its corresponding ground-truth reference, enabling a direct visual evaluation of the reconstruction quality and spatial consistency across the spectrum.
 
-\newpage
-
 \section{Results on Cloud Removal}
 \label{sec:cloud_removal}
 Cloud contamination remains one of the most persistent challenges in the field of remote sensing. To evaluate the model’s capability to address this issue, the model trained on the complete winter subset of the SEN12-MS dataset was assessed using the complementary SEN12-MS-CR dataset (see Section~\ref{sec:datasets}). The SEN12-MS-CR dataset consists of triplets comprising SAR images, cloud-contaminated optical images, and their corresponding cloud-free optical references, covering identical geographic regions across all 13 Sentinel-2 spectral bands.
 For quantitative evaluation, a subset of 2,000 samples from the winter portion of the SEN12-MS-CR dataset was used. The evaluation data underwent identical preprocessing and clipping procedures as described in Section~\ref{subsec:preprocessing}, ensuring consistency with the model’s training conditions.
 
-\begin{table}[h!]
+\begin{table}[!htbp]
     \centering
     \caption[Quantitative results on cloud removal]{Quantitative evaluation of different models trained on the full winter subset of the SEN12-MS dataset, assessed on the complementary SEN12-MS-CR dataset for the \textbf{cloud removal} task.}
     \begin{tabular}{lcccc}
@@ -234,7 +232,7 @@ The quantitative results presented in Table~\ref{tab:quantitative_result_cr} dem
 
 The qualitative results shown in Figure~\ref{fig:qualitative_results_cloud_removal} further illustrate the model’s effectiveness in removing cloud contamination. The model successfully reconstructs cloud-free optical imagery from the corresponding SAR inputs, even when the reference optical images are heavily obscured. As seen in rows (a) and (b), the model accurately restores regions affected by thin cloud cover while preserving structural and textural details. In partially occluded cases, illustrated in (c) and (d), the reconstructed outputs maintain clear boundaries, sharp edges, and consistent color representation. Remarkably, even for fully cloud-covered scenes, as in (e), the model generates realistic optical imagery and reliably reproduces urban and structural features.
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
     \centering
     \setlength{\tabcolsep}{2pt} % horizontal padding between columns (same as ablation)
     \renewcommand{\arraystretch}{1.0} % vertical padding (same as ablation)

@@ -40,7 +40,7 @@ The Sentinel-1 component originates from ground-range-detected (GRD) products ac
 Importantly, all triplets underwent manual verification by a remote sensing expert. This revision step ensured that each patch is free from major artifacts, severe registration errors, or residual cloud contamination, thereby guaranteeing the dataset’s quality and usability for machine learning tasks.
 The ROIs were sampled globally across all inhabited continents and four meteorological seasons of 2017 to maximize spatial and temporal diversity, as illustrated in Figure~\ref{fig:sen_12_ms_dist}. Nevertheless, it should be noted that the ROI selection was not purely random. In practice, locations were chosen to avoid large homogeneous areas such as deserts or oceans and to ensure inclusion of diverse land cover classes. While this design improves the dataset’s representativeness for a wide range of applications, it may introduce a bias toward heterogeneous landscapes and thus does not fully capture the true global distribution of land cover types.
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.95\textwidth]{img/sen_12_ms_distribution.png}
   \caption[ROIs distribution of the SEN12-MS Dataet]{ROIs distribution of the SEN12-MS Dataet. Adapted from \cite{sen12ms_2019}}
@@ -49,7 +49,7 @@ The ROIs were sampled globally across all inhabited continents and four meteorol
 
 For the purpose of this thesis, which addresses translation from SAR to multispectral optical imagery, only the Sentinel-1 and Sentinel-2 modalities are employed. Representative sample pairs are illustrated in Figure~\ref{fig:sen12ms_pairs}. The MODIS land cover products included in SEN12-MS are disregarded, as they are not directly relevant to the translation task.
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
     \centering
     % First row: SAR images
     \begin{subfigure}{0.18\textwidth}
@@ -123,7 +123,7 @@ A comparsion of these different datasets is provided in Table~\ref{tab:sen12_dat
 
 \newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
 
-\begin{table}[!h]
+\begin{table}[!htbp]
     \centering
     \caption{Comparison of SEN12-family datasets.}
     \label{tab:sen12_datasets}
@@ -267,7 +267,7 @@ The network training followed a staged adversarial optimization scheme with alte
 
 Training was performed for 150~epochs using a batch size of 16 and the Adam optimizer~\cite{adam_optimizer_2017} with a learning rate of $1\times10^{-4}$ and momentum parameters $(\beta_1, \beta_2) = (0.5, 0.999)$. To prevent overfitting and accelerate convergence, the generator’s learning rate was adaptively reduced using the \texttt{ReduceLROnPlateau} scheduler, which halves the rate when the validation $\mathrm{L1}$ loss stagnates. The discriminator’s learning rate was kept constant throughout training to maintain stable adversarial dynamics, as reducing it was found to introduce additional instability during preliminary experiments.
 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
     \centering
     \includegraphics[width=0.8\textwidth,height=0.65\textheight]{img/training_curves.png}
     \caption{Training and validation loss curves over 150~epochs.}
@@ -287,7 +287,7 @@ The effectiveness of SAR-to-optical image translation depends not only on the ch
 
 In~\cite{quality_assessment_S2OT}, five image quality assessment (IQA) metrics —SSIM, FSIM, MSE, LPIPS, and DISTS— were systematically evaluated through image restoration experiments to determine their suitability for SAR-to-optical translation tasks. The study found that SSIM, MSE, and LPIPS exhibited strong consistency with human visual perception, demonstrated stable convergence, and effectively captured both structural and textural characteristics. In contrast, FSIM often failed to represent fine details accurately, while DISTS showed instability. Consequently, the authors recommended SSIM, MSE, and LPIPS as complementary metrics for assessing pixel-level accuracy, structural similarity, and perceptual quality, respectively. However, based on the analysis conducted in this thesis across 16 related studies, SSIM, PSNR, and SAM remain the most widely adopted evaluation metrics in SAR-to-optical translation, fusion, and cloud removal research, whereas LPIPS and MSE appear less frequently, as summarized in Table~\ref{tab:iqa}. This trend aligns with the observations reported in the literature survey by~\cite{sar_2_opt_CGAN_survey_taxonomy}.
 
-\begin{table}[h!]
+\begin{table}[!htbp]
 \centering
 \footnotesize
 \begingroup
@@ -400,7 +400,7 @@ The Mean Absolute Error (MAE) measures the average absolute difference between c
 % Lower FID values indicate closer alignment between generated and real image distributions. While LPIPS assesses pairwise perceptual similarity, FID captures distributional alignment, making the two metrics complementary.
 
 \renewcommand{\arraystretch}{1.25} % increases row height by 25%
-\begin{table}[h!]
+\begin{table}[!htbp]
 	\centering
 	\caption[Evaluation metrics used summary]{Summary of evaluation metrics for SAR-to-multispectral translation.}
 	\begin{tabularx}{\textwidth}{p{1.7cm}X X X}

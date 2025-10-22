@@ -14,7 +14,7 @@ The origins of remote sensing date back to the invention of photography in 1839,
 The postwar decades brought rapid technological progress with the development of radar and synthetic aperture radar (SAR), enabling high-resolution imaging independent of daylight or weather. Early rocket experiments in the late 1940s foreshadowed the space age, initiated by the launch of Sputnik in 1957. NASA's TIROS-1 satellite (1960) delivered the first global meteorological observations, while the launch of Landsat-1 in 1972 introduced systematic multispectral Earth observation, a program that continues today as the longest-running record of land surface change \cite{book_Physics_Techniques_RS,book_Satellite_RS}.
 
 A symbolic milestone came with the Apollo 8 mission in 1968, when astronaut William Anders captured the famous Earthrise photograph, showing Earth rising above the lunar horizon (see Figure \ref{fig:earthrise}). This image not only had profound cultural, philosophical, and scientific impact but also highlighted the scientific value of spaceborne Earth observation.
-\begin{figure}[h!]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.95\textwidth]{img/earthrise.jpg}
   \caption[“Earthrise” photograph (Apollo 8, 1968)]{The iconic “Earthrise” photograph taken by astronaut William Anders during the Apollo 8 mission in 1968. Source: NASA.}
@@ -37,7 +37,7 @@ It is funded, coordinated, and managed by the European Commission in cooperation
 
 The Copernicus Space Component features a new family of dedicated satellites,
 called Sentinels, depicted in Figure \ref{fig:sentinels}, specifically designed for the operational needs of the Copernicus programme. 
-\begin{figure}[h!]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.95\textwidth]{img/sentinels.png}
   \caption[Copernicus Sentinel missions (artist’s impression)]{An artist's impression of the Copernicus Sentinel Missions. Source: ESA.}
@@ -56,8 +56,6 @@ Launched on 13 October 2017, the \textsc{Sentinel-5P} mission (Sentinel-5 Precur
 Looking into the future, six Sentinel Expansion missions will join the fleet. These include, among others, the Hyperspectral Imaging Mission, the Polar Ice and Snow Topography Altimeter, and the Anthropogenic Carbon Dioxide Monitoring mission \cite{ESA_Copernicus}.
 Since the focus of this work is on SAR and Optical data, only Sentinel-1 and 2 will be discussed in details in the next sections. 
 
-
-
 \subsection{Sentinel-1}
 The following description is based on the official SentiWiki resource provided by the European Space Agency \cite{sentiwiki}. 
 
@@ -67,8 +65,6 @@ The SAR instrument actively transmits microwave signals towards the Earth and re
 Sentinel-1 operates in four exclusive acquisition modes: Stripmap (SM), Interferometric Wide Swath (IW), Extra-Wide Swath (EW), and Wave (WV). These modes achieve spatial resolutions down to 5~m and swath widths of up to 400~km. The system supports single (HH or VV) and dual (HH+HV or VV+VH) polarisation. While SM, IW, and EW modes allow a duty cycle of up to 30 minutes per orbit, WV mode extends this to 75 minutes. Over land, IW mode with VV+VH polarisation is the primary operational configuration, balancing revisit performance, service requirements, and the creation of a consistent long-term archive. For open-ocean observations, WV mode with VV polarisation is predominantly employed, while EW mode is mainly used for sea-ice monitoring and maritime surveillance in high-latitude regions. SM mode is activated only for small islands or in response to emergencies. Across all modes, products are provided at multiple processing levels, from raw SAR data (Level-0) to geophysical ocean products (Level-2 OCN).  
 
 The revisit capabilities of Sentinel-1 are particularly notable. In IW mode, a single satellite can achieve global coverage every 12 days, while the two-satellite constellation reduces the repeat cycle to six days, completing 175 orbits per cycle. These systematic observations, combined with advanced interferometric capabilities, enable the precise detection of land subsidence, structural deformation, and ground movements that are otherwise imperceptible. Such data are invaluable for urban planning, geohazard monitoring, and applications in mining, geology, and risk assessment for infrastructure and natural hazards \cite{sentiwiki}.  
-
-
 
 \subsection{Sentinel-2}
 The following description is based on the official SentiWiki resource provided by the European Space Agency \cite{sentiwiki}. 
@@ -178,15 +174,13 @@ As shown in Table~\ref{tab:cloud_removal_categories}, research on cloud removal 
 
 In summary, cloud removal research spans single-image, multimodal, and multitemporal strategies, each with distinct advantages and limitations. Among these, SAR-to-optical image translation has recently emerged as a particularly promising direction, as it leverages the cloud-penetrating capability of SAR while producing optical-like imagery suitable for interpretation and analysis. This thesis builds on this line of research by systematically investigating and advancing SAR-to-optical translation methods for cloud removal.
 
-\newpage
-
 \section{Generative Artificial Intelligence}
 \label{sec:genAI}
 Generative Artificial Intelligence (GenAI) refers to a class of machine learning models designed to generate new data samples that resemble a given training distribution, such as images, text, or audio. Unlike discriminative models, which focus on classifying or predicting labels, generative models learn (an approximation to) the underlying probability distribution of the data to create novel instances~\cite{genAI_HS_sens_data_review}. This capability has revolutionized fields like computer vision, where GenAI is used for tasks including image synthesis, style transfer, and domain adaptation. In the context of remote sensing, GenAI enables, among others, the creation of synthetic imagery, such as translating radar data to optical-like representations, which is particularly useful for overcoming environmental limitations like cloud cover, as well as data fusion for both heterogeneous and homogeneous imagery, enhancing spatial, spectral, and temporal resolution and mitigating the limitations of individual sensors~\cite{RS_Data_Fusion_GANs_sota}.
 
 One of the foundational frameworks in GenAI is the Generative Adversarial Network (GAN), introduced in 2014 by Goodfellow et~al.~\cite{GANs_Goodfellow}. As depicted in Figure~\ref{fig:GANs}, a GAN consists of two neural networks: a generator ($G$) that produces synthetic data from random noise, and a discriminator ($D$) that evaluates whether the generated data is real or fake. 
 These components are trained adversarially—the generator aims to fool the discriminator, while the discriminator improves its ability to distinguish real from generated samples—leading to increasingly realistic outputs.
-\begin{figure}[h!]
+\begin{figure}[!htbp]
   \centering
   \includegraphics[width=0.95\textwidth]{img/GANs.png}
   \caption[GAN architecture overview]{GAN Architecture Overview: Source: https://developers.google.com/}
